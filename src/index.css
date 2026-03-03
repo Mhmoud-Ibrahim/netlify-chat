@@ -1,0 +1,143 @@
+*{
+  box-sizing: border-box;
+}
+html{
+  scroll-behavior: smooth;
+}
+#root{
+ padding: 0 !important;
+ margin: 0 !important;
+}
+body{
+  margin: 0 ;
+  padding: 0 !important;
+  margin-right:0;
+  font-family: "word sans",sans-serif;
+font-size: clamp(7px,2vw,12px);
+height: auto !important;
+  background-color: rgba(0,55,0,0.2) !important;
+}
+/* 
+.home{
+ height: 75vh !important;
+  background-image: linear-gradient( rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(assets/beach.jpg);
+  background-position: center center;
+  background-size: cover;
+  z-index: -50;
+} */
+.bg-main{
+  background-color: rgba(0,55,0,0.2) !important;
+}
+.bg-costom{
+   background-color: rgba(0,55,0,10)!important;
+}
+.logo-box{
+   font-size:clamp(2px,2vw,14px) !important;
+}
+.logout{
+  font-size: clamp(3px,2vw,11px)!important;
+}
+.btn{
+  font-size: clamp(2px,2vw,11px);
+}
+.logo{
+  font-size: clamp(2px,1vw,10px); ;
+}
+.navbar{
+  font-size: clamp(8px,2vw,14px) !important;
+ height: 3rem !important;
+ transition: all 0.3s ease-in-out !important;
+}
+.list-group-item{
+  font-size: clamp(8px,2vw,14px) !important;
+  background-color: wheat !important;
+  color: black !important;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 0 5px;
+  list-style: none !important;
+}
+.nav-link{
+  font-size: clamp(8px,2vw,14px) !important;
+  color: white !important;
+}
+img{
+  width: max(8px,2vw,100%);
+}
+
+
+
+/* footer */
+ .footer{
+  background-color: var(--secondary-color);
+  padding: 30px 10px;
+  font-size: 17px;
+  color: white;
+  text-align: center;
+  font-size: clamp(8px,2vw,14px);
+}
+.footer .span {
+  font-weight: 800;
+  color: var(--main-color);
+}
+/* end footer */
+/* register */
+
+.password i {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  user-select: none;
+}
+/* register */
+/* loading */
+.register,.login{
+ height: 75vh;
+  background-image: linear-gradient( rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(assets/133994691574573561.jpg);
+  background-position: center center;
+  background-size: cover;
+  border-radius: 3%;
+}
+.loadingbg{
+  position: fixed;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.7);
+}
+.loader {
+  font-size: 48px !important;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  display: inline-block;
+  color: #62ff00;
+  letter-spacing: 2px;
+  position: relative !important;
+  box-sizing: border-box;
+}
+.loader::after {
+  content: 'Loading';
+  position: absolute ! important;
+  left: 0;
+  top: 0;
+  color: #FFF;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: animloader 6s linear infinite;
+}
+
+@keyframes animloader {
+  0% {
+    height: 100%;
+  }
+  100% {
+    height: 0%;
+  }
+}
+
+/* loading */

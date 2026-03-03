@@ -1,0 +1,28 @@
+# المجلدات التي يتم إنشاؤها تلقائياً (لا ترفعها أبداً)
+node_modules/
+dist/
+build/
+.cache/
+
+# ملفات البيئة (تحتوي على مفاتيح سرية، أضفها في إعدادات Netlify يدوياً)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ملفات سجل الأخطاء
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# ملفات النظام والمتصفح
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ملفات الـ PWA التي يتم إنشاؤها وقت الـ Build
+service-worker.js
+service-worker.js.map
