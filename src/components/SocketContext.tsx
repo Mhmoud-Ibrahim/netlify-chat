@@ -73,6 +73,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     const [notification, setNotification] = useState<{ msg: string, senderName: string, senderId: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedUserDatafromServer, setSelecteduserDatafromServer] = useState<UserData | null>(null);
+    const notifySound = new Audio('/notification.wav');
     // 2. Callbacks
     const updateUserData = useCallback((newData: Partial<UserData>) => {
         setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
@@ -184,6 +185,17 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                         senderName: senderObj ? senderObj.name : "Unknown",
                         senderId: incomingSenderId
                     });
+
+
+                    notifySound.currentTime = 0; 
+        
+        // تشغيل الصوت
+        notifySound.play().catch(error => {
+            // المتصفح قد يمنع الصوت التلقائي إلا بعد أول تفاعل للمستخدم مع الصفحة
+            console.warn("Audio play failed (waiting for user interaction):", error);
+        });
+        if (navigator.vibrate) navigator.vibrate(200); 
+
                     return currentList;
                 });
             }
