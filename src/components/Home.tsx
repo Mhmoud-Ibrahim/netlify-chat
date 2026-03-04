@@ -5,6 +5,7 @@ import { UsersList } from "./UserList";
 import api from "./api";
 import ChatLoader from "./ChatLoader";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion"; // إضافة Framer Motion
 
 export function Home() {
   const socketContext = useContext(SocketContext);
@@ -128,18 +129,33 @@ useEffect(() => {
   return (<>
   {loading?<ChatLoader/>:<div className="container-fluid vh-100 p-0 overflow-hidden bg-light" style={{ marginTop: '60px' }}>
       <div className="row g-0 h-100">
-        <div className="col-md-4 col-lg-3 border-end bg-white d-none d-md-block h-100 overflow-auto shadow-sm">
+        {/* <div className="col-md-4 col-lg-3 border-end bg-white d-none d-md-block h-100 overflow-auto shadow-sm">
           <div className="p-3 bg-primary text-white d-flex align-items-center justify-content-between">
             <h5 className="mb-0 fw-bold">المحادثات</h5>
             <i className="fa-solid fa-message"></i>
           </div>
           <UsersList />
-        </div>
+        </div> */}
+         <motion.div 
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              className="col-md-4 col-lg-3 border-end bg-white d-none d-md-block h-100 overflow-auto shadow-sm"
+            >
+              <div className="p-3 bg-primary text-white d-flex align-items-center justify-content-between">
+                <h5 className="mb-0 fw-bold">المحادثات</h5>
+                <i className="fa-solid fa-message"></i>
+              </div>
+              <UsersList />
+            </motion.div>
 
         <div className="col-md-8 col-lg-9 h-100 d-flex flex-column bg-chat-pattern">
           {selectedUser ? (
             <>
-              <div className="p-2 bg-white border-bottom shadow-sm d-flex align-items-center justify-content-between px-3 z-3">
+               <motion.div 
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="p-2 bg-white border-bottom shadow-sm d-flex align-items-center justify-content-between px-3 z-3"
+                  >
                 <div className="d-flex align-items-center">
                   <div className="position-relative">
                   {selectedUserDatafromServer && selectedUserDatafromServer.fulluserImage ?
@@ -169,18 +185,21 @@ useEffect(() => {
       className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
     >
       <i className="fa-solid fa-trash-can"></i>
-    </button>
+    </button> 
+  </div></motion.div>
+
     
-  </div>
-
-
-              </div>
-
               <div className="flex-grow-1 overflow-auto p-4 custom-scrollbar bg-messages-area">
+                 <AnimatePresence initial={false}>
                 {messages.map((item, index) => {
                   const isMe = String(item?.senderId || item?.sender).replace(/['"]+/g, '') === myId;
                   return (
-                    <div key={index} className={`d-flex ${isMe ? "justify-content-end" : "justify-content-start"} mb-3 animate__animated animate__fadeInUp`}>
+                    <motion.div key={item._id || index} // يفضل استخدام id الرسالة لو متاح
+                            initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ duration: 0.2 }}
+                    className={`d-flex ${isMe ? "justify-content-end" : "justify-content-start"} mb-3 animate__animated animate__fadeInUp`}
+                    >
                       <div className={`p-2 shadow-sm message-bubble ${isMe ? "bg-primary text-white bubble-me" : "bg-white text-dark bubble-them"}`}
                         style={{ maxWidth: "70%", borderRadius: "15px", position: "relative" }}>
 
@@ -211,9 +230,9 @@ useEffect(() => {
                           className="btn-delete-msg"><i className="fa-solid fa-xmark"></i></button>
                         )}
                       </div>
-                    </div>
+                    </motion.div>
                   );
-                })}
+                })}</AnimatePresence>
                 <div ref={scrollRef} />
               </div>
 
