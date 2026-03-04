@@ -95,7 +95,7 @@ img{
 /* loading */
 .register,.login{
  height: 75vh;
-  background-image: linear-gradient( rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(assets/133994691574573561.jpg);
+  background-image: linear-gradient( rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url(assets/bgg.jpg);
   background-position: center center;
   background-size: cover;
   border-radius: 3%;

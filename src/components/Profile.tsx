@@ -2,6 +2,7 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { SocketContext } from "./SocketContext";
 import api from "./api";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 export function Profile() {
   const socketContext = useContext(SocketContext);
@@ -109,7 +110,11 @@ export function Profile() {
     </div>
   );
 
-  return (
+  return <>
+  <Helmet>
+          <title>Profile </title>
+          <meta name="description" content="Your Profile" />
+        </Helmet>
     <div className="container py-5 mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-5">
@@ -171,6 +176,6 @@ export function Profile() {
         </div>
       </div>
     </div>
-  );
+  </>
 }
 

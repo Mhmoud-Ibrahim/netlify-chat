@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { UsersList } from './UserList';
 import { SocketContext } from './SocketContext';
 import ChatLoader from './ChatLoader';
+import { Helmet } from 'react-helmet-async';
 
 
 function Users() {
@@ -10,7 +11,11 @@ function Users() {
         return <ChatLoader />;
     }
 
-    return (
+    return <>
+    <Helmet>
+            <title>Users </title>
+            <meta name="description" content="Users " />
+          </Helmet>
         <div className="container-fluid min-vh-100 bg-light py-5" style={{ marginTop: '60px' }}>
             <div className="container">
                 {/* هيدر الصفحة بتصميم عصري */}
@@ -99,7 +104,7 @@ function Users() {
                 }
             `}</style>
         </div>
-    );
+    </>
 }
 
 export default Users;

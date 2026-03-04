@@ -6,7 +6,7 @@ import api from "./api";
 import ChatLoader from "./ChatLoader";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion"; // إضافة Framer Motion
-
+import { Helmet } from 'react-helmet-async';
 export function Home() {
   const socketContext = useContext(SocketContext);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -127,6 +127,10 @@ useEffect(() => {
 
 
   return (<>
+  <Helmet>
+        <title>chatnow </title>
+        <meta name="description" content="chat now with friends " />
+      </Helmet>
   {loading?<ChatLoader/>:<div className="container-fluid vh-100 p-0 overflow-hidden bg-light" style={{ marginTop: '60px' }}>
       <div className="row g-0 h-100">
         {/* <div className="col-md-4 col-lg-3 border-end bg-white d-none d-md-block h-100 overflow-auto shadow-sm">

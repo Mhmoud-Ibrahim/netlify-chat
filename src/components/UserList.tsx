@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { SocketContext } from "./SocketContext";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export function UsersList() {
   const context = useContext(SocketContext);
@@ -42,7 +43,11 @@ export function UsersList() {
       </div>
     );
   }
-  return (
+  return <>
+  <Helmet>
+          <title>User List </title>
+          <meta name="description" content="User List " />
+        </Helmet>
     <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
       <div className="p-3 bg-white border-bottom d-flex align-items-center justify-content-between">
         <h6 className="mb-0 fw-bold text-dark d-flex align-items-center">
@@ -128,5 +133,5 @@ export function UsersList() {
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
       `}</style>
     </div>
-  );
+  </>
 }

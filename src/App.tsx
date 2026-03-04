@@ -3,7 +3,7 @@
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import Register from "./components/Register.tsx";
 import Login from "./components/Login.tsx";
-
+import { HelmetProvider } from 'react-helmet-async';
 import NotFound from "./components/NotFound";
 import Layout from "./components/Layout";
 
@@ -32,10 +32,14 @@ function App() {
 
 
 
-  return <SocketProvider>
+  return <HelmetProvider>
+    <SocketProvider>
      <Toaster position="top-right" reverseOrder={false} />
     <RouterProvider router={routers} />
   </SocketProvider>
+   </HelmetProvider>
+  
+  
 }
 
 
