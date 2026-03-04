@@ -133,7 +133,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         const newSocket = io("https://m2dd-chatserver.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
-            reconnection: true,           // إعادة الاتصال تلقائياً
+            reconnection: true,  
+            query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
             reconnectionDelay: 1000,      // التأخير بين المحاولات
             timeout: 20000,
@@ -143,6 +144,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         newSocket.on("connect", () => {
             setIsConnected(true);
             console.log("Socket connected via Token Cookie ✅");
+             newSocket.emit("online_users")
             toast.success(`You are connected `, {
                 icon: '✅',
                 duration: 4000,
