@@ -147,7 +147,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
              newSocket.emit("online_users")
             toast.success(`You are connected `, {
                 icon: '✅',
-                duration: 4000,
+                duration: 1000,
                 position: 'top-center',
                 style: {
                     borderRadius: '10px',
