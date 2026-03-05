@@ -16,7 +16,9 @@ export interface MsgData {
     imageUrl?: string;
     senderId: string;
     _id?: string;
-    receiverId: string;
+    receiverId?: string; // اختياري في حالة المجموعة
+    roomId?: string;     // معرف الغرفة
+    senderName?: string;
     timestamps: string;
     createdAt?: string | Date;
     seen: boolean;
@@ -30,33 +32,47 @@ export interface UserData {
     fulluserImage?: string;
     createdAt?: string;
 }
+export interface GroupData {
+    _id: string;
+    name: string;
+    admin: string;
+    members: UserData[];
+    groupImage?: string;
+}
 
 export interface SocketContextValue {
-    socket: Socket | null;
-    isConnected: boolean;
-    messages: MsgData[];
-    notification: { msg: string, senderName: string, senderId: string } | null;
+    setSelecteduserDatafromServer: React.Dispatch<React.SetStateAction<UserData | null>>;
     sendMsg: (msg: MsgData) => void;
     deleteMsg: (msg: MsgData) => void;
     deleteSenderMessages: () => void;
-    userId: string;
     setUserId: React.Dispatch<React.SetStateAction<string>>;
-    selectedUser: string | null;
     sendPrivateMsg: (msg: string, receiverId: string, imageUrl?: string) => void;
     setSelectedUser: (id: string | null) => void;
-    onlineUsers: OnlineUser[];
     logout: () => Promise<void>;
-    userName: string | undefined;
     setUsername: (name: string | undefined) => void;
     clearNotification: () => void;
-    user: UserData | null;
-    selectedUserDatafromServer: UserData | null;
     setUser: React.Dispatch<React.SetStateAction<UserData | null>>;
     updateUserData: (newData: Partial<UserData>) => void;
-    setSelecteduserDatafromServer: React.Dispatch<React.SetStateAction<UserData | null>>;
-    loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    notification: { msg: string, senderName: string, senderId: string } | null;
+    selectedUserDatafromServer: UserData | null;
+    userName: string | undefined;
+    selectedUser: string | null;
+    onlineUsers: OnlineUser[];
+    userGroups: GroupData[];
+    user: UserData | null;
     allUsers: UserData[];
+    socket: Socket | null;
+    isConnected: boolean;
+    messages: MsgData[];
+    loading: boolean;
+    userId: string;
+    selectedGroup: string | null;
+    setSelectedGroup: (id: string | null) => void;
+        sendGroupMsg: (msg: string, roomId: string, imageUrl?: string) => void;
+    
+   
+   
   
 }
 
@@ -75,28 +91,52 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     const [notification, setNotification] = useState<{ msg: string, senderName: string, senderId: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedUserDatafromServer, setSelecteduserDatafromServer] = useState<UserData | null>(null);
-    const [allUsers, setAllUsers] = useState<UserData[]>([]); // state جديدة
+    const [allUsers, setAllUsers] = useState<UserData[]>([]); 
+     const [userGroups, setUserGroups] = useState<GroupData[]>([]);
+     const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+
 
    
     const notifySound = new Audio('/notification.mp3');
-    // 2. Callbacks
-    const updateUserData = useCallback((newData: Partial<UserData>) => {
-        setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
+       // جلب جميع المستخدمين
+    useEffect(() => {
+        const fetchAllUsers = async () => {
+            try {
+                const res = await api.get("/auth/all");
+                setAllUsers(res.data.users || res.data);
+            } catch (err) { console.error("Failed to fetch users", err); }
+        };
+        if (userId) fetchAllUsers();
+    }, [userId]);
+
+    // جلب مجموعات المستخدم
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                const res = await api.get("/auth/groups");
+                setUserGroups(res.data.groups || []);
+            } catch (err) { console.error("Failed to fetch groups", err); }
+        };
+        if (userId) fetchGroups();
+    }, [userId]);
+
+    // التحقق من الجلسة
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get("/auth/me");
+                if (res.data?.user) {
+                    setUser(res.data.user);
+                    setUserId(res.data.user._id || res.data.user.id);
+                    setUsername(res.data.user.name);
+                }
+            } catch (err) { console.error("Auth check failed:", err); }
+            finally { setLoading(false); }
+        };
+        checkAuth();
     }, []);
 
-    const deleteMsg = useCallback((msg: MsgData) => {
-        if (socket && msg._id) {
-            socket.emit("delete_msg", { messageId: msg._id, receiverId: msg.receiverId });
-        }
-    }, [socket]);
-
-    const deleteSenderMessages = useCallback(() => {
-        if (socket && selectedUser) {
-            socket.emit("delete_sender_messages", { receiverId: selectedUser });
-        }
-    }, [socket, selectedUser]);
-
-    const clearNotification = useCallback(() => setNotification(null), []);
 
 useEffect(() => {
         const fetchAllUsers = async () => {
@@ -179,6 +219,13 @@ useEffect(() => {
             setMessages(history);
         });
 
+           newSocket.on("receive_group_msg", (data: MsgData) => {
+            setMessages((prev) => [...prev, data]);
+            if (data.senderId !== userId) {
+                notifySound.play().catch(() => {});
+            }
+        });
+
         newSocket.on("private_reply", (data: MsgData) => {
             setMessages((prev) => [...prev, data]);
             const incomingSenderId = String(data.senderId).replace(/['"]+/g, '');
@@ -257,15 +304,45 @@ useEffect(() => {
         };
     }, [userId, user?.fulluserImage]);
 
-    // 5. Helper Methods
-    const sendPrivateMsg = (msg: string, receiverId: string, imageUrl?: string) => {
-        socket?.emit("private_msg", {
-            msg,
+
+    // 2. Callbacks
+    const updateUserData = useCallback((newData: Partial<UserData>) => {
+        setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
+    }, []);
+
+    const deleteMsg = useCallback((msg: MsgData) => {
+        if (socket && msg._id) {
+            socket.emit("delete_msg", { messageId: msg._id, receiverId: msg.receiverId });
+        }
+    }, [socket]);
+
+    const deleteSenderMessages = useCallback(() => {
+        if (socket && selectedUser) {
+            socket.emit("delete_sender_messages", { receiverId: selectedUser });
+        }
+    }, [socket, selectedUser]);
+
+    const clearNotification = useCallback(() => setNotification(null), []);
+
+  
+  // دوال الإرسال
+    const sendPrivateMsg = useCallback((msg: string, receiverId: string, imageUrl?: string) => {
+        if (socket) socket.emit("private_msg", { msg,
             receiverId,
             senderId: userId,
-            imageUrl: imageUrl || null
-        });
-    };
+            imageUrl: imageUrl || null });
+    }, [socket]);
+
+    const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
+        if (socket) socket.emit("send_group_msg", { msg, roomId, imageUrl });
+    }, [socket]);
+
+    // الانضمام للمجموعة عند اختيارها
+    useEffect(() => {
+        if (socket && selectedGroup) {
+            socket.emit("join_group", { roomId: selectedGroup });
+        }
+    }, [socket, selectedGroup]);
 
     const logout = async () => {
         try {
@@ -283,12 +360,38 @@ useEffect(() => {
 
     return (
         <SocketContext.Provider value={{
-            socket, isConnected, messages, clearNotification, sendPrivateMsg, notification,allUsers,
-            userId, sendMsg: (msg) => socket?.emit("chatMsg", msg), setSelectedUser, updateUserData,
-            selectedUser, onlineUsers, logout, userName, setUsername, selectedUserDatafromServer,
-            deleteMsg, deleteSenderMessages, user, setUserId, setUser, loading, setLoading, setSelecteduserDatafromServer
-        }}>
-            {children}
-        </SocketContext.Provider>
+    socket, 
+    isConnected, 
+    messages, 
+    clearNotification, 
+    sendPrivateMsg, 
+    notification,
+    allUsers,
+    userId, 
+    setUserId,
+    sendMsg: (msg) => socket?.emit("chatMsg", msg), 
+    setSelectedUser, 
+    updateUserData,
+    selectedUser, 
+    onlineUsers, 
+    logout, 
+    userName, 
+    setUsername, 
+    selectedUserDatafromServer, 
+    sendGroupMsg, 
+    userGroups,
+    selectedGroup, // تأكد من إضافة هذه
+    setSelectedGroup, // تأكد من إضافة هذه
+    deleteMsg, 
+    deleteSenderMessages, 
+    user, 
+    setUser, 
+    loading, 
+    setLoading, 
+    setSelecteduserDatafromServer
+}}>
+    {children}
+</SocketContext.Provider>
+
     );
 }
