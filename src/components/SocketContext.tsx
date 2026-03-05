@@ -101,7 +101,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 useEffect(() => {
         const fetchAllUsers = async () => {
             try {
-                const res = await api.get("/users/all"); // تأكد من مسار الـ API عندك
+                const res = await api.get("/auth/all"); // تأكد من مسار الـ API عندك
                 setAllUsers(res.data.users || res.data);
             } catch (err) {
                 console.error("Failed to fetch users", err);
