@@ -23,7 +23,7 @@ export interface MsgData {
 }
 
 export interface UserData {
-    id: string; // تأكد من استخدامه كـ _id كما في MongoDB
+    _id: string; 
     name: string;
     email: string;
     userImage?: string;
@@ -56,6 +56,8 @@ export interface SocketContextValue {
     setSelecteduserDatafromServer: React.Dispatch<React.SetStateAction<UserData | null>>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    allUsers: UserData[];
+  
 }
 
 export const SocketContext = createContext<SocketContextValue | null>(null);
@@ -73,7 +75,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     const [notification, setNotification] = useState<{ msg: string, senderName: string, senderId: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedUserDatafromServer, setSelecteduserDatafromServer] = useState<UserData | null>(null);
-    const notifySound = new Audio('/notification.wav');
+    const [allUsers, setAllUsers] = useState<UserData[]>([]); // state جديدة
+
+   
+    const notifySound = new Audio('/notification.mp3');
     // 2. Callbacks
     const updateUserData = useCallback((newData: Partial<UserData>) => {
         setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
@@ -92,6 +97,19 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     }, [socket, selectedUser]);
 
     const clearNotification = useCallback(() => setNotification(null), []);
+
+useEffect(() => {
+        const fetchAllUsers = async () => {
+            try {
+                const res = await api.get("/users/all"); // تأكد من مسار الـ API عندك
+                setAllUsers(res.data.users || res.data);
+            } catch (err) {
+                console.error("Failed to fetch users", err);
+            }
+        };
+        if (userId) fetchAllUsers();
+    }, [userId]);
+
     useEffect(() => {
         const checkAuth = async () => {
             try {
@@ -265,7 +283,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     return (
         <SocketContext.Provider value={{
-            socket, isConnected, messages, clearNotification, sendPrivateMsg, notification,
+            socket, isConnected, messages, clearNotification, sendPrivateMsg, notification,allUsers,
             userId, sendMsg: (msg) => socket?.emit("chatMsg", msg), setSelectedUser, updateUserData,
             selectedUser, onlineUsers, logout, userName, setUsername, selectedUserDatafromServer,
             deleteMsg, deleteSenderMessages, user, setUserId, setUser, loading, setLoading, setSelecteduserDatafromServer
