@@ -25,6 +25,7 @@ export interface MsgData {
 }
 
 export interface UserData {
+    id?: string;
     _id: string; 
     name: string;
     email: string;
@@ -70,7 +71,7 @@ export interface SocketContextValue {
     selectedGroup: string | null;
     setSelectedGroup: (id: string | null) => void;
         sendGroupMsg: (msg: string, roomId: string, imageUrl?: string) => void;
-    
+    fetchGroups: () => Promise<void>;
    
    
   
@@ -300,6 +301,7 @@ useEffect(() => {
             newSocket.off("messages_read");
             newSocket.off("private_reply");
             newSocket.off("get_history");
+            newSocket.off("receive_group_msg"); 
             newSocket.close();
         };
     }, [userId, user?.fulluserImage]);
@@ -315,6 +317,14 @@ useEffect(() => {
             socket.emit("delete_msg", { messageId: msg._id, receiverId: msg.receiverId });
         }
     }, [socket]);
+    const fetchGroups = useCallback(async () => {
+    try {
+        const res = await api.get("/auth/groups");
+        setUserGroups(res.data.groups || []);
+    } catch (err) {
+        console.error("Failed to fetch groups", err);
+    }
+}, [userId]);
 
     const deleteSenderMessages = useCallback(() => {
         if (socket && selectedUser) {
@@ -388,7 +398,8 @@ useEffect(() => {
     setUser, 
     loading, 
     setLoading, 
-    setSelecteduserDatafromServer
+    setSelecteduserDatafromServer,
+    fetchGroups
 }}>
     {children}
 </SocketContext.Provider>

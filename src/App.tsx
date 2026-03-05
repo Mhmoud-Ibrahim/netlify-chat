@@ -15,6 +15,7 @@ import { Home } from "./components/Home.tsx";
 import Users from "./components/Users.tsx";
 import { Toaster } from "react-hot-toast";
 import { GroupsList } from "./components/GroupsList.tsx";
+import { GroupChat } from "./components/GroupChat.tsx";
 
 function App() {
   let routers = createHashRouter([
@@ -27,6 +28,7 @@ function App() {
         { path: 'users', element:<ProtectedRoute><Users/></ProtectedRoute>},
         { path: 'profile', element: <ProtectedRoute><Profile /></ProtectedRoute> },
         { path: 'groups', element: <ProtectedRoute><GroupsList /></ProtectedRoute> },
+        { path: 'groupChat', element: <ProtectedRoute><GroupChat/></ProtectedRoute> },
         { path: '*', element: <NotFound /> }
       ]
     }
