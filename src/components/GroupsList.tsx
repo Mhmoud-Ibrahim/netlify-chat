@@ -37,6 +37,7 @@ export function GroupsList() {
       const res = await api.post("/auth/groups", { name: groupName, members: selectedMembers });
       
       if (res.data.group) {
+        // console.log(res.data.group);
         const newGroup = res.data.group;
         toast.success("تم إنشاء المجموعة بنجاح");
           if (context.fetchGroups) {
