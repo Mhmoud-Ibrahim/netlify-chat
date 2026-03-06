@@ -189,7 +189,7 @@ useEffect(() => {
             }
             return;
         }
-        const newSocket = io("https://m2dd-chatserver.hf.space", {
+        const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
             reconnection: true,  
