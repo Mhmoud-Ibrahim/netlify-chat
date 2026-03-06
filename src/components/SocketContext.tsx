@@ -195,7 +195,7 @@ useEffect(() => {
             reconnection: true,  
             query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
-           // reconnectionDelay: 1000,      
+           reconnectionDelay: 1000,      
             timeout: 20000,
 
         });
