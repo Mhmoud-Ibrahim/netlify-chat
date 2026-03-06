@@ -247,23 +247,16 @@ useEffect(() => {
                             color: 'yellow',
                         },
                     });
-
                     setNotification({
                         msg: data.text || "message is sent",
                         senderName: senderObj ? senderObj.name : "Unknown",
                         senderId: incomingSenderId
                     });
-
-
                     notifySound.currentTime = 0; 
-        
-        // تشغيل الصوت
-        notifySound.play().catch(error => {
-            // المتصفح قد يمنع الصوت التلقائي إلا بعد أول تفاعل للمستخدم مع الصفحة
+        notifySound.play().catch(error => { 
             console.warn("Audio play failed (waiting for user interaction):", error);
         });
         if (navigator.vibrate) navigator.vibrate(200); 
-
                     return currentList;
                 });
             }
