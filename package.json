@@ -15,7 +15,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
     "aos": "^2.3.4",
-    "axios": "^1.7.0",
+    "axios": "^1.13.6",
     "bootstrap": "^5.3.3",
     "formik": "^2.4.6",
     "framer-motion": "^12.35.0",
