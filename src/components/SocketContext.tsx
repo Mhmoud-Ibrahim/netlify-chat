@@ -181,14 +181,6 @@ useEffect(() => {
             setMessages(history);
         });
 
-        //    newSocket.on("receive_group_msg", (data: MsgData) => {
-        //     setMessages((prev) => [...prev, data]);
-        // console.log("Received group message:", data);
-        //     if (data.senderId !== userId) {
-        //          const sound = new Audio('/notification.mp3'); 
-        // sound.play().catch(() => console.log("Audio play deferred"));
-        //     }
-        // });
         newSocket.on("receive_group_msg", (data: MsgData) => {
     setMessages((prev) => {
         // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
@@ -305,11 +297,6 @@ useEffect(() => {
             senderId: userId,
             imageUrl: imageUrl || null });
     }, [socket]);
-
-    // const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
-    //     if (socket) socket.emit("send_group_msg", { msg, roomId, imageUrl });
-    // }, [socket]);
-
 
     const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
     if (socket) {
