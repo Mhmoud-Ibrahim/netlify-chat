@@ -107,6 +107,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                     setUser(u);
                     setUserId(u._id || u.id);
                     setUsername(u.name);
+                console.log("User authenticated:", u);
                 }
             } catch (err) {
                 console.error("Auth check failed:", err);
@@ -228,6 +229,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         });
 
         newSocket.on("online_users", (users: OnlineUser[]) => setOnlineUsers(users));
+       
         newSocket.on("message_deleted", ({ messageId }) => {
             setMessages((prev) => prev.filter(m => m._id !== messageId));
         });

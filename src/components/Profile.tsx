@@ -62,13 +62,12 @@ export function Profile() {
 
   useEffect(() => {
     if (!socket) return;
-console.log("profile=>>"+  user)
     const handleProfileUpdate = (updatedData: any) => {
       const data = updatedData.user || updatedData;
       setUser(data); 
       setUserId(data.id || data._id);
       setLoading(false);
-
+console.log(data);
       toast.dismiss("updating"); // إغلاق رسالة التحميل
       toast.success("تم تحديث البيانات بنجاح ✅");
     };
