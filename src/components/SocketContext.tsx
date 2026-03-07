@@ -148,20 +148,20 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
     useEffect(() => {
-        if (!userId || userId === '') {
-            if (socket) {
-                socket.disconnect();
-                setSocket(null);
-            }
-            return;
-        }
+        // if (!userId || userId === '') {
+        //     if (socket) {
+        //         socket.disconnect();
+        //         setSocket(null);
+        //     }
+        //     return;
+       // }
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
             reconnection: true,  
             query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
-        //    reconnectionDelay: 1000,      
+           reconnectionDelay: 1000,      
             timeout: 20000,
 
         });
