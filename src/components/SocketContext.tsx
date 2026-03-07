@@ -720,7 +720,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             transports: ['websocket'],
             reconnection: true,  
             query: { userId: userId },
-            // reconnectionAttempts: Infinity,
+            reconnectionAttempts: Infinity,
             timeout: 20000,
         });
 
@@ -765,7 +765,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
         setSocket(newSocket);
         return () => { newSocket.disconnect(); };
-    }, [userId, onlineUsers]);
+    }, [userId]);
 
     // --- الدوال الأساسية للإرسال والتحكم ---
     const sendPrivateMsg = (msg: string, receiverId: string, imageUrl?: string) => {
