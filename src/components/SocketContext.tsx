@@ -720,7 +720,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             transports: ['websocket'],
             reconnection: true,  
             query: { userId: userId },
-            reconnectionAttempts: Infinity,
+            
             timeout: 20000,
         });
 
