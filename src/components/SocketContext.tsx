@@ -98,8 +98,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
    
-    const notifySound = new Audio('/notification.mp3');
-       // جلب جميع المستخدمين
+  
   
 
     useEffect(() => {
@@ -116,13 +115,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             reconnection: true,  
             query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
-           reconnectionDelay: 1000,      
+           //reconnectionDelay: 1000,      
             timeout: 20000,
 
         });
-
+  const notifySound = new Audio('/notification.mp3');
         newSocket.on("connect", () => {
             setIsConnected(true);
+             setLoading(false);
             console.log("Socket connected via Token Cookie ✅");
              newSocket.emit("online_users")
             toast.success(`You are connected `, {
@@ -219,7 +219,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             newSocket.off("receive_group_msg"); 
             newSocket.close();
         };
-    }, [userId, user?.fulluserImage]);
+    }, [userId]);
   useEffect(() => {
          const checkAuth = async () => {
             try {
