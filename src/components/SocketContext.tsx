@@ -97,55 +97,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
      const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
 
   useEffect(() => {
-        //  const checkAuth = async () => {
-        //     try {
-        //         setLoading(true);
-        //         const res = await api.get("/auth/me");
-        //         if (res.data && res.data.user) {
-        //              console.log(res.data.user);
-        //             setUser(res.data.user);
-        //             setUserId(res.data.user.id);
-        //             setUsername(res.data.user.name);
-        //             // console.log(res.data.user.name);
-        //             // console.log(res.data.user.id);
-        //         } else {
-        //             setUser(null);
-        //             setUserId('');
-        //         }
-        //     } catch (err) {
-        //         console.error("Auth check failed:", err);
-        //         setUser(null);
-        //         setUserId('');
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // };
-       
-        // const fetchAllUsers = async () => {
-        //     try {
-        //         const res = await api.get("/auth/all");
-        //         setAllUsers(res.data.users || res.data);
-        //     } catch (err) { console.error("Failed to fetch users", err); }
-        // };
-        // ///
-        //  const fetchGroups = async () => {
-        //     try {
-        //         const res = await api.get("/auth/groups");
-        //         setUserGroups(res.data.groups || []);
-        //     } catch (err) { console.error("Failed to fetch groups", err); }
-        // };
-        // if (userId){
-        //     fetchGroups();
-        //     fetchAllUsers()
-        //      checkAuth();
-        // } ;
-    }, [userId]);
-   
-  
-  
-
-    useEffect(() => {
-           const checkAuth = async () => {
+         const checkAuth = async () => {
             try {
                 setLoading(true);
                 const res = await api.get("/auth/me");
@@ -187,6 +139,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             fetchAllUsers()
              checkAuth();
         } ;
+    }, [userId]);
+   
+  
+  
+
+    useEffect(() => {
         if (!userId || userId === '') {
             if (socket) {
                 socket.disconnect();
