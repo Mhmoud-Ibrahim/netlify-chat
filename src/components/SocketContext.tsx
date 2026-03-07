@@ -98,32 +98,110 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
    
-   
+    const notifySound = new Audio('/notification.mp3');
        // جلب جميع المستخدمين
-  
+    useEffect(() => {
+        const fetchAllUsers = async () => {
+            try {
+                const res = await api.get("/auth/all");
+                setAllUsers(res.data.users || res.data);
+            } catch (err) { console.error("Failed to fetch users", err); }
+        };
+        if (userId) fetchAllUsers();
+    }, [userId]);
+
+    // جلب مجموعات المستخدم
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                const res = await api.get("/auth/groups");
+                setUserGroups(res.data.groups || []);
+            } catch (err) { console.error("Failed to fetch groups", err); }
+        };
+        if (userId) fetchGroups();
+    }, [userId]);
+
+    // التحقق من الجلسة
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get("/auth/me");
+                if (res.data?.user) {
+                    setUser(res.data.user);
+                    setUserId(res.data.user._id || res.data.user.id);
+                    setUsername(res.data.user.name);
+                }
+            } catch (err) { console.error("Auth check failed:", err); }
+            finally { setLoading(false); }
+        };
+        checkAuth();
+    }, []);
+
+
+useEffect(() => {
+        const fetchAllUsers = async () => {
+            try {
+                const res = await api.get("/auth/all"); // تأكد من مسار الـ API عندك
+                setAllUsers(res.data.users || res.data);
+            } catch (err) {
+                console.error("Failed to fetch users", err);
+            }
+        };
+        if (userId) fetchAllUsers();
+    }, [userId]);
 
     useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get("/auth/me");
+                if (res.data && res.data.user) {
+                    // console.log(res.data.user);
+                    setUser(res.data.user);
+                    setUserId(res.data.user.id);
+                    setUsername(res.data.user.name);
+                    // console.log(res.data.user.name);
+                    // console.log(res.data.user.id);
+                } else {
+                    setUser(null);
+                    setUserId('');
+                }
+            } catch (err) {
+                console.error("Auth check failed:", err);
+                setUser(null);
+                setUserId('');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, []);
+
+
+    useEffect(() => {
+
         if (!userId || userId === '') {
             if (socket) {
                 socket.disconnect();
                 setSocket(null);
             }
             return;
-       }
+        }
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
             reconnection: true,  
             query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
-           //reconnectionDelay: 1000,      
+        //    reconnectionDelay: 1000,      
             timeout: 20000,
 
         });
 
         newSocket.on("connect", () => {
             setIsConnected(true);
-             setLoading(false);
             console.log("Socket connected via Token Cookie ✅");
              newSocket.emit("online_users")
             toast.success(`You are connected `, {
@@ -137,7 +215,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                 },
             });
         });
- const notifySound = new Audio('/notification.mp3');
+
         newSocket.on("get_history", (history: MsgData[]) => {
             setMessages(history);
         });
@@ -221,51 +299,6 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             newSocket.close();
         };
     }, [userId, user?.fulluserImage]);
-  useEffect(() => {
-         const checkAuth = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get("/auth/me");
-                if (res.data && res.data.user) {
-                     console.log(res.data.user);
-                    setUser(res.data.user);
-                    setUserId(res.data.user.id);
-                    setUsername(res.data.user.name);
-                    // console.log(res.data.user.name);
-                    // console.log(res.data.user.id);
-                } else {
-                    setUser(null);
-                    setUserId('');
-                }
-            } catch (err) {
-                console.error("Auth check failed:", err);
-                setUser(null);
-                setUserId('');
-            } finally {
-                setLoading(false);
-            }
-        };
-       
-        const fetchAllUsers = async () => {
-            try {
-                const res = await api.get("/auth/all");
-                setAllUsers(res.data.users || res.data);
-            } catch (err) { console.error("Failed to fetch users", err); }
-        };
-        ///
-         const fetchGroups = async () => {
-            try {
-                const res = await api.get("/auth/groups");
-                setUserGroups(res.data.groups || []);
-            } catch (err) { console.error("Failed to fetch groups", err); }
-        };
-        if (userId){
-            fetchGroups();
-            fetchAllUsers()
-             checkAuth();
-        } ;
-    }, [userId]);
-
 
 
     // 2. Callbacks
@@ -306,11 +339,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
         if (socket) socket.emit("send_group_msg", { msg, roomId, imageUrl });
-    if (socket && selectedGroup) {
+    }, [socket]);
+
+    // الانضمام للمجموعة عند اختيارها
+    useEffect(() => {
+        if (socket && selectedGroup) {
             socket.emit("join_group", { roomId: selectedGroup });
         }
-    }, [socket,selectedGroup]);
-
+    }, [socket, selectedGroup]);
 
     const logout = async () => {
         try {
@@ -364,6 +400,3 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     );
 }
-
-
-
