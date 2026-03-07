@@ -96,22 +96,28 @@ export function SocketProvider({ children }: { children: ReactNode }) {
      const [userGroups, setUserGroups] = useState<GroupData[]>([]);
      const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
 
-
-   
-    const notifySound = new Audio('/notification.mp3');
-       // جلب جميع المستخدمين
+// 1. التحقق من الجلسة عند فتح التطبيق (مرة واحدة فقط)
     useEffect(() => {
-        const fetchAllUsers = async () => {
+        const checkAuth = async () => {
             try {
-                const res = await api.get("/auth/all");
-                setAllUsers(res.data.users || res.data);
-            } catch (err) { console.error("Failed to fetch users", err); }
+                setLoading(true);
+                const res = await api.get("/auth/me");
+                if (res.data?.user) {
+                    const u = res.data.user;
+                    setUser(u);
+                    setUserId(u._id || u.id);
+                    setUsername(u.name);
+                }
+            } catch (err) {
+                console.error("Auth check failed:", err);
+            } finally {
+                setLoading(false);
+            }
         };
-        if (userId) fetchAllUsers();
-    }, [userId]);
+        checkAuth();
+    }, []);
 
-    // جلب مجموعات المستخدم
-    useEffect(() => {
+      useEffect(() => {
         const fetchGroups = async () => {
             try {
                 const res = await api.get("/auth/groups");
@@ -121,65 +127,22 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         if (userId) fetchGroups();
     }, [userId]);
 
-    // التحقق من الجلسة
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get("/auth/me");
-                if (res.data?.user) {
-                    setUser(res.data.user);
-                    setUserId(res.data.user._id || res.data.user.id);
-                    setUsername(res.data.user.name);
-                }
-            } catch (err) { console.error("Auth check failed:", err); }
-            finally { setLoading(false); }
-        };
-        checkAuth();
-    }, []);
+        if (!userId) return;
 
-
-useEffect(() => {
         const fetchAllUsers = async () => {
             try {
-                const res = await api.get("/auth/all"); // تأكد من مسار الـ API عندك
-                setAllUsers(res.data.users || res.data);
+                const resUsers = await api.get("/auth/all");
+                setAllUsers(resUsers.data.users || resUsers.data);
+                await fetchGroups();
             } catch (err) {
-                console.error("Failed to fetch users", err);
+                console.error("Failed to fetch initial data", err);
             }
         };
-        if (userId) fetchAllUsers();
+         if (userId) fetchAllUsers();
     }, [userId]);
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get("/auth/me");
-                if (res.data && res.data.user) {
-                    // console.log(res.data.user);
-                    setUser(res.data.user);
-                    setUserId(res.data.user.id);
-                    setUsername(res.data.user.name);
-                    // console.log(res.data.user.name);
-                    // console.log(res.data.user.id);
-                } else {
-                    setUser(null);
-                    setUserId('');
-                }
-            } catch (err) {
-                console.error("Auth check failed:", err);
-                setUser(null);
-                setUserId('');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkAuth();
-    }, []);
-
-
+    const notifySound = new Audio('/notification.mp3');
     useEffect(() => {
 
         if (!userId || userId === '') {
@@ -195,7 +158,7 @@ useEffect(() => {
             reconnection: true,  
             query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
-        //    reconnectionDelay: 1000,      
+            reconnectionDelay: 1000,      
             timeout: 20000,
 
         });
@@ -215,6 +178,7 @@ useEffect(() => {
                 },
             });
         });
+         newSocket.on("disconnect", () => setIsConnected(false));
 
         newSocket.on("get_history", (history: MsgData[]) => {
             setMessages(history);
@@ -329,7 +293,7 @@ useEffect(() => {
     const clearNotification = useCallback(() => setNotification(null), []);
 
   
-  // دوال الإرسال
+ 
     const sendPrivateMsg = useCallback((msg: string, receiverId: string, imageUrl?: string) => {
         if (socket) socket.emit("private_msg", { msg,
             receiverId,
@@ -341,7 +305,7 @@ useEffect(() => {
         if (socket) socket.emit("send_group_msg", { msg, roomId, imageUrl });
     }, [socket]);
 
-    // الانضمام للمجموعة عند اختيارها
+   
     useEffect(() => {
         if (socket && selectedGroup) {
             socket.emit("join_group", { roomId: selectedGroup });
@@ -384,8 +348,8 @@ useEffect(() => {
     selectedUserDatafromServer, 
     sendGroupMsg, 
     userGroups,
-    selectedGroup, // تأكد من إضافة هذه
-    setSelectedGroup, // تأكد من إضافة هذه
+    selectedGroup, 
+    setSelectedGroup, 
     deleteMsg, 
     deleteSenderMessages, 
     user, 
