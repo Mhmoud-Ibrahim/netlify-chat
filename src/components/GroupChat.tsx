@@ -532,9 +532,8 @@ export function GroupChat() {
                   {uniqueMessages.length > 0 ? (
                     uniqueMessages.map((item, index) => {
                       const isMe = String(item?.senderId || item?.sender).replace(/['"]+/g, '') === myId;
-                      
-                      // حل مشكلة التكرار في المفتاح: استخدام _id أو تركيبة فريدة من الوقت والترتيب
-                      const msgKey = item._id ? `id-${item._id}` : `idx-${index}-${new Date(item.createdAt || Date.now()).getTime()}`;
+             
+                  const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
 
                       return (
                         <motion.div

@@ -181,13 +181,22 @@ useEffect(() => {
             setMessages(history);
         });
 
-           newSocket.on("receive_group_msg", (data: MsgData) => {
-            setMessages((prev) => [...prev, data]);
-            if (data.senderId !== userId) {
-                 const sound = new Audio('/notification.mp3'); 
-        sound.play().catch(() => console.log("Audio play deferred"));
-            }
-        });
+        //    newSocket.on("receive_group_msg", (data: MsgData) => {
+        //     setMessages((prev) => [...prev, data]);
+        // console.log("Received group message:", data);
+        //     if (data.senderId !== userId) {
+        //          const sound = new Audio('/notification.mp3'); 
+        // sound.play().catch(() => console.log("Audio play deferred"));
+        //     }
+        // });
+        newSocket.on("receive_group_msg", (data: MsgData) => {
+    setMessages((prev) => {
+        // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
+        const exists = prev.find(m => m._id === data._id && data._id !== undefined);
+        if (exists) return prev; 
+        return [...prev, data];
+    });
+});
 
         newSocket.on("private_reply", (data: MsgData) => {
             setMessages((prev) => [...prev, data]);
@@ -297,9 +306,34 @@ useEffect(() => {
             imageUrl: imageUrl || null });
     }, [socket]);
 
+    // const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
+    //     if (socket) socket.emit("send_group_msg", { msg, roomId, imageUrl });
+    // }, [socket]);
+
+
     const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
-        if (socket) socket.emit("send_group_msg", { msg, roomId, imageUrl });
-    }, [socket]);
+    if (socket) {
+        const tempId = `temp-${Date.now()}`; // معرف مؤقت
+        const newMsg: MsgData = {
+            text: msg,
+            senderId: userId,
+            sender: userId,
+            roomId: roomId,
+            imageUrl: imageUrl,
+            createdAt: new Date().toISOString(),
+            seen: false,
+            timestamps: new Date().toISOString(),
+            _id: tempId // نعطيها ID مؤقت فوراً
+        };
+
+        // إضافتها للـ state محلياً فوراً لتظهر للمستخدم
+        setMessages(prev => [...prev, newMsg]);
+
+        // إرسالها للسيرفر
+         socket.emit("send_group_msg", { roomId, msg, imageUrl });
+    }
+}, [socket, userId]);
+
 
     // الانضمام للمجموعة عند اختيارها
     useEffect(() => {
