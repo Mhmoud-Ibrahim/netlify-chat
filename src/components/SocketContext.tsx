@@ -97,20 +97,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
      const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
 
 
-   
-    const notifySound = new Audio('/notification.mp3');
-       // جلب جميع المستخدمين
-    useEffect(() => {
-        const fetchAllUsers = async () => {
-            try {
-                const res = await api.get("/auth/all");
-                setAllUsers(res.data.users || res.data);
-            } catch (err) { console.error("Failed to fetch users", err); }
-        };
-        if (userId) fetchAllUsers();
-    }, [userId]);
-
-    // جلب مجموعات المستخدم
+    // get all groups
     useEffect(() => {
         const fetchGroups = async () => {
             try {
@@ -128,6 +115,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                 setLoading(true);
                 const res = await api.get("/auth/me");
                 if (res.data?.user) {
+                    console.log(res.data.user);
                     setUser(res.data.user);
                     setUserId(res.data.user._id || res.data.user.id);
                     setUsername(res.data.user.name);
@@ -137,8 +125,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         };
         checkAuth();
     }, []);
-
-
+// get all users
 useEffect(() => {
         const fetchAllUsers = async () => {
             try {
@@ -151,33 +138,7 @@ useEffect(() => {
         if (userId) fetchAllUsers();
     }, [userId]);
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get("/auth/me");
-                if (res.data && res.data.user) {
-                    // console.log(res.data.user);
-                    setUser(res.data.user);
-                    setUserId(res.data.user.id);
-                    setUsername(res.data.user.name);
-                    // console.log(res.data.user.name);
-                    // console.log(res.data.user.id);
-                } else {
-                    setUser(null);
-                    setUserId('');
-                }
-            } catch (err) {
-                console.error("Auth check failed:", err);
-                setUser(null);
-                setUserId('');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkAuth();
-    }, []);
+  
 
 
     useEffect(() => {
@@ -215,7 +176,7 @@ useEffect(() => {
                 },
             });
         });
-
+    const notifySound = new Audio('/notification.mp3');
         newSocket.on("get_history", (history: MsgData[]) => {
             setMessages(history);
         });
@@ -264,11 +225,10 @@ useEffect(() => {
         });
 
         newSocket.on("online_users", (users: OnlineUser[]) => setOnlineUsers(users));
+      
         newSocket.on("message_deleted", ({ messageId }) => {
             setMessages((prev) => prev.filter(m => m._id !== messageId));
         });
-
-
         newSocket.on("messages_read", ({ readerId }) => {
             setMessages(prev => prev.map(m => {
                 if (String(m.receiverId).replace(/['"]+/g, '') === String(readerId)) {
@@ -298,7 +258,7 @@ useEffect(() => {
             newSocket.off("receive_group_msg"); 
             newSocket.close();
         };
-    }, [userId, user?.fulluserImage]);
+    }, [userId]);
 
 
     // 2. Callbacks
