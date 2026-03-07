@@ -89,6 +89,7 @@ console.log(data);
       if (res.data && res.data.user) {
         setUser(res.data.user);
         updateUserData(res.data.user);
+        console.log(res.data.user);
         toast.success(`تم رفع الصورة بنجاح`, {
           icon: '📸',
           duration: 3000,
