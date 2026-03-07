@@ -68,7 +68,7 @@ export function Profile() {
       setUserId(data.id || data._id);
       setLoading(false);
 console.log(data);
-      toast.dismiss("updating"); // إغلاق رسالة التحميل
+      toast.dismiss("updating"); 
       toast.success("تم تحديث البيانات بنجاح ✅");
     };
 
