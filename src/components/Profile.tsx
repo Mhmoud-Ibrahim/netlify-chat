@@ -87,9 +87,7 @@ console.log(data);
 
 
       setLoading(true);
-      const res = await api.post("/profileImage", formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
+      const res = await api.post("/profileImage", formData);
       if (res.data && res.data.user) {
         setUser(res.data.user);
         updateUserData(res.data.user);
