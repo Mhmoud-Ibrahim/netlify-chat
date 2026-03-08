@@ -199,7 +199,9 @@ const confirmDeleteGoupe = () => {
 
                             {!isMe && (
                               <div className="fw-bold mb-1" style={{ fontSize: '10px', color: '#6610f2' }}>
-                                {item.senderName || "عضو"}
+                                 {currentGroupData?.members?.find(
+      (m: any) => String(m._id) === String(item.senderId || item.sender)
+    )?.name || "عضو"}
                               </div>
                             )}
 
