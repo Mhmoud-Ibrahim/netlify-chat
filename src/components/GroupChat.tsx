@@ -215,7 +215,7 @@ export function GroupChat() {
                   ) : (
                    <div className="d-flex flex-column align-items-center justify-content-center h-100 opacity-50">
         <i className="fa-solid fa-comments fa-3x mb-3 text-muted"></i>
-        <p className="fw-bold text-muted">لا توجد رسائل بعد.. ابدأ المحادثة الآن</p>
+        <p className="fw-bold text-muted">thre is no messages yet ...</p>
       </div>
                   )}
                   <div ref={scrollRef} />
