@@ -146,13 +146,20 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
 
-        if (!userId || userId === '') {
-            if (socket) {
-                socket.disconnect();
-                setSocket(null);
-            }
-            return;
-        }
+        if (!userId || userId.trim() === '') return;
+        // {
+        //     // if (socket) {
+        //     //     socket.disconnect();
+        //     //     setSocket(null);
+        //     // }
+            
+        // }
+
+        //   if (!userId || userId.trim() === '') return;
+
+        // 2. منع إعادة إنشاء السوكيت إذا كان موجوداً ومتصلاً بالفعل لنفس المستخدم
+        if (socket && socket.connected && socket.io.opts.query?.userId === userId) return;
+
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
@@ -168,8 +175,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             newSocket.emit("online_users")
             toast.success(`You are connected `, {
                 icon: '✅',
-                duration: 700,
-                position: 'top-center',
+                duration: 500,
+                position: 'top-right',
                 style: {
                     borderRadius: '10px',
                     background: '#123405',
@@ -184,7 +191,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         });
 
         newSocket.on("receive_group_msg", (data: MsgData) => {
-            audioRef.current.play();
+             audioRef.current.play().catch(() => console.log("Audio waiting for interaction"));
+            
             setMessages((prev) => {
                 const isDuplicate = prev.some(m =>
                     (m._id && m._id === data._id) ||
@@ -285,6 +293,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             newSocket.off("get_history");
             newSocket.off("receive_group_msg");
             newSocket.close();
+            newSocket.disconnect();
             newSocket.off("group_deleted")
         };
     }, [userId]);
