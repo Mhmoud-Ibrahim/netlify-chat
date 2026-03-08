@@ -323,7 +323,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
         if (socket && selectedGroup) {
             socket.emit("join_group", { roomId: selectedGroup });
         }
-    }, [socket, selectedGroup]);
+    }, [socket]);
 
     const logout = async () => {
         try {
