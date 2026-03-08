@@ -139,7 +139,7 @@ useEffect(() => {
             }
         };
         if (userId) fetchAllUsers();
-    }, [userId]);
+    }, []);
 
   
 
@@ -154,9 +154,8 @@ useEffect(() => {
             return;
         }
          const playNotification = () => {
-        audioRef.current.play().catch(() => {
-            console.log("الارشاد: المتصفح منع الصوت، يجب على المستخدم الضغط على أي مكان في الصفحة أولاً.");
-        });
+        audioRef.current.play();
+        
     };
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
@@ -220,6 +219,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
                     const senderObj = currentList.find(u =>
                         String(u.userId).replace(/['"]+/g, '') === incomingSenderId
                     );
+                    
                     toast.success(`New message from ${senderObj ? senderObj.name : "Unknown"}`, {
                         icon: '💬',
                         duration: 5000,
@@ -270,7 +270,6 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
 
 
     newSocket.on("group_deleted", ({ roomId }) => {
-        // إزالة المجموعة من القائمة محلياً
         setUserGroups((prev) => prev.filter(g => g._id !== roomId));
         
         // إذا كان المستخدم يفتح هذه المجموعة حالياً، نغلقها
@@ -319,6 +318,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
 }, [userId]);
 
     const deleteSenderMessages = useCallback(() => {
+        console.log( selectedUser);
         if (socket && selectedUser) {
             socket.emit("delete_sender_messages", { receiverId: selectedUser });
         }
