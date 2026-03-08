@@ -48,6 +48,7 @@ export interface SocketContextValue {
     sendMsg: (msg: MsgData) => void;
     deleteMsg: (msg: MsgData) => void;
     deleteSenderMessages: () => void;
+    deleteGroup: (roomId: string) => void;
     setUserId: React.Dispatch<React.SetStateAction<string>>;
     sendPrivateMsg: (msg: string, receiverId: string, imageUrl?: string) => void;
     setSelectedUser: (id: string | null) => void;
@@ -260,6 +261,22 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             );
         });
 
+
+    newSocket.on("group_deleted", ({ roomId }) => {
+        // إزالة المجموعة من القائمة محلياً
+        setUserGroups((prev) => prev.filter(g => g._id !== roomId));
+        
+        // إذا كان المستخدم يفتح هذه المجموعة حالياً، نغلقها
+        if (selectedGroup === roomId) {
+            setSelectedGroup(null);
+            setMessages([]);
+            toast.error("تم حذف هذه المجموعة من قبل المسؤول");
+        }
+    });
+
+
+
+
         setSocket(newSocket);
 
         return () => {
@@ -269,8 +286,9 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             newSocket.off("get_history");
             newSocket.off("receive_group_msg"); 
             newSocket.close();
+            newSocket.off("group_deleted")
         };
-    }, [userId]);
+    }, [userId,selectedGroup]);
 
 
     // 2. Callbacks
@@ -297,6 +315,15 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             socket.emit("delete_sender_messages", { receiverId: selectedUser });
         }
     }, [socket, selectedUser]);
+    
+  
+const deleteGroup = useCallback((roomId: string) => {
+    if (socket && isConnected) {
+        socket.emit("delete_group", { roomId });
+    }
+}, [socket, isConnected]);
+
+
 
     const clearNotification = useCallback(() => setNotification(null), []);
 
@@ -366,6 +393,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
     setSelectedGroup, // تأكد من إضافة هذه
     deleteMsg, 
     deleteSenderMessages, 
+    deleteGroup,
     user, 
     setUser, 
     loading, 

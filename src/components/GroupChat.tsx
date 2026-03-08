@@ -5,7 +5,7 @@ import api from "./api";
 import ChatLoader from "./ChatLoader";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from 'react-helmet-async';
-
+import toast from "react-hot-toast";
 export function GroupChat() {
   const socketContext = useContext(SocketContext);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -22,7 +22,8 @@ export function GroupChat() {
     userGroups,
     socket,
     loading,
-    setLoading
+    setLoading,
+    deleteGroup
   } = socketContext;
 
   const myId = String(userId || "").replace(/['"]+/g, '');
@@ -75,6 +76,53 @@ export function GroupChat() {
       .filter(m => String(m.room || m.roomId) === String(selectedGroup))
       .map((m, index) => [m._id || `temp-${index}`, m])
 ).values());
+
+
+// const confirmDeleteGoupe = () => {
+//     toast((t) => (
+//       <div style={{ direction: 'rtl' }}>
+//         <p className="mb-2">مسح الشات؟</p>
+//         <button className="btn btn-danger btn-sm me-2" onClick={() => { deleteGroup(); toast.dismiss(t.id); }}>نعم</button>
+//         <button className="btn btn-light btn-sm" onClick={() => toast.dismiss(t.id)}>إلغاء</button>
+//       </div>
+//     ));
+//   };
+
+
+const confirmDeleteGoupe = () => {
+    // التأكد أولاً من وجود مجموعة مختارة
+    if (!selectedGroup) {
+        return toast.error("يرجى اختيار مجموعة أولاً");
+    }
+
+    toast((t) => (
+      <div style={{ direction: 'rtl', textAlign: 'right' }}>
+        <p className="mb-3 fw-bold text-dark">⚠️ هل أنت متأكد من حذف هذه المجموعة نهائياً؟</p>
+        <div className="d-flex justify-content-end gap-2">
+          <button 
+            className="btn btn-danger btn-sm px-3" 
+            onClick={() => { 
+              // نمرر الـ ID الخاص بالمجموعة المختارة حالياً
+              deleteGroup(selectedGroup); 
+              toast.dismiss(t.id); 
+            }}
+          >
+            نعم، احذف
+          </button>
+          <button 
+            className="btn btn-light btn-sm px-3" 
+            onClick={() => toast.dismiss(t.id)}
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 6000, // وقت كافٍ للمستخدم ليقرر
+      position: 'top-center',
+      style: { borderRadius: '12px', border: '1px solid #eee' }
+    });
+};
 
   return (<>
     <Helmet>
@@ -156,6 +204,16 @@ export function GroupChat() {
                               <span>{new Date(item.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                             </div>
                           </div>
+                           <div className="d-flex align-items-center gap-3">
+ 
+
+    <button 
+       onClick={confirmDeleteGoupe} 
+      className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
+    >
+      <i className="fa-solid fa-trash-can"></i>
+    </button> 
+  </div>
                         </motion.div>
                       );
                     })
