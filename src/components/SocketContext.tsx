@@ -271,6 +271,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             setSelectedGroup(null);
             setMessages([]);
             toast.error("تم حذف هذه المجموعة من قبل المسؤول");
+            window.location.href = "/home";
         }
     });
 
