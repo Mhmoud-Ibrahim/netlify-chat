@@ -69,12 +69,12 @@ export function GroupChat() {
     },
   });
 
-  // 1. تصفية الرسائل المكررة بناءً على الـ _id (لحذف التكرار الناتج عن السوكيت)
+ 
   const uniqueMessages = Array.from(new Map(
     messages
-      .filter(m => m.roomId && String(m.roomId).replace(/['"]+/g, '') === String(selectedGroup).replace(/['"]+/g, ''))
-      .map(m => [m._id || `${m.senderId}-${m.createdAt}`, m])
-  ).values());
+      .filter(m => String(m.room || m.roomId) === String(selectedGroup))
+      .map((m, index) => [m._id || `temp-${index}`, m])
+).values());
 
   return (<>
     <Helmet>
@@ -125,10 +125,11 @@ export function GroupChat() {
 
               <div className="flex-grow-1 overflow-auto p-4 custom-scrollbar bg-messages-area d-flex flex-column">
                 <AnimatePresence initial={false}>
+                  
                   {uniqueMessages.length > 0 ? (
                     uniqueMessages.map((item, index) => {
                       const isMe = String(item?.senderId || item?.sender).replace(/['"]+/g, '') === myId;
-             
+            
                   const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
 
                       return (

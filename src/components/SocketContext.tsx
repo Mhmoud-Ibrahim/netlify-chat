@@ -22,6 +22,7 @@ export interface MsgData {
     timestamps: string;
     createdAt?: string | Date;
     seen: boolean;
+    room: string;
 }
 
 export interface UserData {
@@ -115,7 +116,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                 setLoading(true);
                 const res = await api.get("/auth/me");
                 if (res.data?.user) {
-                    console.log(res.data.user);
+                    console.log( "checkAuth:"+ res.data.user);
                     setUser(res.data.user);
                     setUserId(res.data.user._id || res.data.user.id);
                     setUsername(res.data.user.name);
@@ -177,21 +178,49 @@ useEffect(() => {
             });
         });
     const notifySound = new Audio('/notification.mp3');
+
         newSocket.on("get_history", (history: MsgData[]) => {
             setMessages(history);
         });
+        
 
-        newSocket.on("receive_group_msg", (data: MsgData) => {
+//         newSocket.on("receive_group_msg", (data: MsgData) => {
+//     setMessages((prev) => {
+//         // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
+//         const exists = prev.find(m => m._id === data._id && data._id !== undefined);
+//         if (exists) return prev; 
+//         return [...prev, data];
+//     });
+// });
+newSocket.on("receive_group_msg", (data: MsgData) => {
     setMessages((prev) => {
-        // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
-        const exists = prev.find(m => m._id === data._id && data._id !== undefined);
-        if (exists) return prev; 
+        // منع التكرار: الباك إند يرسل _id، نتحقق منه هنا
+        const isDuplicate = prev.some(m => m._id === data._id);
+        if (isDuplicate) return prev;
+        
+        // التأكد من أن الرسالة تخص المجموعة المختارة حالياً (اختياري لزيادة الدقة)
         return [...prev, data];
     });
 });
 
+// newSocket.on("receive_group_msg", (data: MsgData) => {
+//     setMessages((prev) => {
+//         // إذا كانت الرسالة موجودة بالفعل (بناءً على الـ ID)، لا تضفها
+//         if (prev.find(m => m._id === data._id)) return prev;
+//         return [...prev, data];
+//     });
+// });
+// استقبال الرسائل الخاصة
+
+
         newSocket.on("private_reply", (data: MsgData) => {
-            setMessages((prev) => [...prev, data]);
+            // setMessages((prev) => [...prev, data]);
+             setMessages((prev) => {
+        // منع التكرار في الرسائل الخاصة أيضاً
+        const isDuplicate = prev.some(m => m._id === data._id);
+        if (isDuplicate) return prev;
+        return [...prev, data];
+    });
             const incomingSenderId = String(data.senderId).replace(/['"]+/g, '');
             const currentUserId = String(userId).replace(/['"]+/g, '');
 
@@ -292,7 +321,8 @@ useEffect(() => {
   
   // دوال الإرسال
     const sendPrivateMsg = useCallback((msg: string, receiverId: string, imageUrl?: string) => {
-        if (socket) socket.emit("private_msg", { msg,
+        if (socket) socket.emit("private_msg", { 
+            msg,
             receiverId,
             senderId: userId,
             imageUrl: imageUrl || null });
@@ -305,16 +335,18 @@ useEffect(() => {
             text: msg,
             senderId: userId,
             sender: userId,
-            roomId: roomId,
+            room: roomId,
             imageUrl: imageUrl,
             createdAt: new Date().toISOString(),
             seen: false,
             timestamps: new Date().toISOString(),
             _id: tempId // نعطيها ID مؤقت فوراً
         };
-
-        // إضافتها للـ state محلياً فوراً لتظهر للمستخدم
-        setMessages(prev => [...prev, newMsg]);
+setMessages(prev => {
+  const exists = prev.find(m => m._id === newMsg._id);
+  if (exists) return prev; // إذا كانت موجودة لا تضفها
+  return [...prev, newMsg];
+});
 
         // إرسالها للسيرفر
          socket.emit("send_group_msg", { roomId, msg, imageUrl });
