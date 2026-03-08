@@ -10,20 +10,21 @@ function Users() {
     if (context?.loading) {
         return <ChatLoader />;
     }
+   
 
     return <>
-    <Helmet>
+        <Helmet>
             <title>Users </title>
             <meta name="description" content="Users " />
-          </Helmet>
+        </Helmet>
         <div className="container-fluid min-vh-100 bg-light py-5" style={{ marginTop: '60px' }}>
             <div className="container">
                 {/* هيدر الصفحة بتصميم عصري */}
                 <div className="row mb-5 animate__animated animate__fadeInDown">
                     <div className="col-12 text-center">
                         <div className="display-5 fw-bold text-success text-uppercase mb-2">
-                           
-                           Chat Now
+
+                            Chat Now
                         </div>
                         <p className="text-muted fs-5 fw-medium">
                             <i className="fa-solid fa-users-viewfinder me-2"></i>

@@ -68,7 +68,7 @@ export function UsersList() {
                 }`}
             >
               <div className="position-relative me-3">
-                <div className="rounded-circle overflow-hidden border border-2 border-warning shadow-sm" style={{ width: '38px', height: '38px' }}>
+                {/* <div className="rounded-circle overflow-hidden border border-2 border-warning shadow-sm" style={{ width: '38px', height: '38px' }}>
                   {u.fulluserImage || u.userImage ? (
                     <img
                       src={u.fulluserImage || u.userImage}
@@ -85,7 +85,30 @@ export function UsersList() {
                       <i className="fa-solid fa-user text-secondary"></i>
                     </div>
                   )}
-                </div>
+                </div> */}
+<div className="rounded-circle overflow-hidden border border-2 border-warning shadow-sm" style={{ width: '38px', height: '38px' }}>
+  {/* نتحقق من وجود الرابط الكامل، أو نركبه يدوياً باستخدام اسم الملف */}
+  {(u.fulluserImage || u.userImage) ? (
+    <img
+      src={
+        u.fulluserImage 
+          ? u.fulluserImage.replace('http://', 'https://') // التأكد من HTTPS
+          : `https://m2dd-serverchatapp.hf.space{u.userImage}`
+      }
+      alt={u.name}
+      className="w-100 h-100 object-fit-cover"
+      onError={(e) => {
+        // في حال فشل التحميل تماماً، نعرض أيقونة المستخدم
+        e.currentTarget.onerror = null; 
+        e.currentTarget.src = "/default-avatar.png"; 
+      }}
+    />
+  ) : (
+    <div className="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+      <i className="fa-solid fa-user text-secondary"></i>
+    </div>
+  )}
+</div>
 
                 {/* نقطة الحالة ديناميكية */}
                 <span className={`position-absolute bottom-0 end-0 p-1 border border-white rounded-circle ${u.isOnline ? 'bg-success' : 'bg-secondary'}`}></span>
