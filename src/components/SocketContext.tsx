@@ -289,7 +289,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             newSocket.close();
             newSocket.off("group_deleted")
         };
-    }, [userId,selectedGroup]);
+    }, [userId]);
 
 
     // 2. Callbacks

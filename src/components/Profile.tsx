@@ -49,7 +49,7 @@ export function Profile() {
               }
             }}
           >
-            حفظ
+           save
           </button>
         </div>
       </div>
@@ -84,8 +84,12 @@ console.log(data);
     formData.append("image", file);
 
     try {
+
+
       setLoading(true);
-      const res = await api.post("/profileImage", formData);
+      const res = await api.post("/profileImage", formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
       if (res.data && res.data.user) {
         setUser(res.data.user);
         updateUserData(res.data.user);
