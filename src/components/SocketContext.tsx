@@ -301,7 +301,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
     // 2. Callbacks
     const updateUserData = useCallback((newData: Partial<UserData>) => {
         setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
-    }, []);
+    }, [userId]);
 
     const deleteMsg = useCallback((msg: MsgData) => {
         if (socket && msg._id) {
