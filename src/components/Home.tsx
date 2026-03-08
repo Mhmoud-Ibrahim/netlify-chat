@@ -133,13 +133,7 @@ useEffect(() => {
       </Helmet>
   {loading?<ChatLoader/>:<div className="container-fluid vh-100 p-0 overflow-hidden bg-light" style={{ marginTop: '60px' }}>
       <div className="row g-0 h-100">
-        {/* <div className="col-md-4 col-lg-3 border-end bg-white d-none d-md-block h-100 overflow-auto shadow-sm">
-          <div className="p-3 bg-primary text-white d-flex align-items-center justify-content-between">
-            <h5 className="mb-0 fw-bold">المحادثات</h5>
-            <i className="fa-solid fa-message"></i>
-          </div>
-          <UsersList />
-        </div> */}
+
          <motion.div 
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}

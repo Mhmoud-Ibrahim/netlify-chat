@@ -196,6 +196,19 @@ export function GroupChat() {
           )}
         </div>
       </div>
+       <style>{`
+        .bg-chat-pattern { background-color: #e5ddd5; position: relative; }
+        .bg-messages-area {
+          background-image: url("https://user-images.githubusercontent.com");
+          background-blend-mode: overlay; background-color: rgba(229, 221, 213, 0.9);
+        }
+        .bubble-me { border-bottom-right-radius: 2px !important; background-color: #b7e1c6 !important; color: #000 !important; }
+        .bubble-them { border-bottom-left-radius: 2px !important; }
+        .btn-delete-msg { position: absolute; top: -10px; right: -10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; cursor: pointer; }
+        .message-bubble:hover .btn-delete-msg { opacity: 1; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
+      `}</style>
     </div>}
   </>);
 }
