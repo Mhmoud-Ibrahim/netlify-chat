@@ -521,9 +521,7 @@ export function GroupChat() {
               <h4 className="fw-bold">اختر مجموعة لبدء الدردشة</h4>
             </div>
           )}
-        </div>
-      </div>
-      <style>{`
+          <style>{`
          .bg-chat-pattern { background-color: #e5ddd5; position: relative; }
          .bg-messages-area {
            background-image: url("https://user-images.githubusercontent.com");
@@ -536,6 +534,9 @@ export function GroupChat() {
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
       `}</style>
+        </div>
+      </div>
+
     </div>}
     <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
   </>);
