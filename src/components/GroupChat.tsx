@@ -70,47 +70,38 @@ export function GroupChat() {
     },
   });
 
- 
+
   const uniqueMessages = Array.from(new Map(
     messages
       .filter(m => String(m.room || m.roomId) === String(selectedGroup))
       .map((m, index) => [m._id || `temp-${index}`, m])
-).values());
+  ).values());
 
 
-// const confirmDeleteGoupe = () => {
-//     toast((t) => (
-//       <div style={{ direction: 'rtl' }}>
-//         <p className="mb-2">مسح الشات؟</p>
-//         <button className="btn btn-danger btn-sm me-2" onClick={() => { deleteGroup(); toast.dismiss(t.id); }}>نعم</button>
-//         <button className="btn btn-light btn-sm" onClick={() => toast.dismiss(t.id)}>إلغاء</button>
-//       </div>
-//     ));
-//   };
 
 
-const confirmDeleteGoupe = () => {
+  const confirmDeleteGoupe = () => {
     // التأكد أولاً من وجود مجموعة مختارة
     if (!selectedGroup) {
-        return toast.error("يرجى اختيار مجموعة أولاً");
+      return toast.error("يرجى اختيار مجموعة أولاً");
     }
 
     toast((t) => (
       <div style={{ direction: 'rtl', textAlign: 'right' }}>
         <p className="mb-3 fw-bold text-dark">⚠️ هل أنت متأكد من حذف هذه المجموعة نهائياً؟</p>
         <div className="d-flex justify-content-end gap-2">
-          <button 
-            className="btn btn-danger btn-sm px-3" 
-            onClick={() => { 
+          <button
+            className="btn btn-danger btn-sm px-3"
+            onClick={() => {
               // نمرر الـ ID الخاص بالمجموعة المختارة حالياً
-              deleteGroup(selectedGroup); 
-              toast.dismiss(t.id); 
+              deleteGroup(selectedGroup);
+              toast.dismiss(t.id);
             }}
           >
             نعم، احذف
           </button>
-          <button 
-            className="btn btn-light btn-sm px-3" 
+          <button
+            className="btn btn-light btn-sm px-3"
             onClick={() => toast.dismiss(t.id)}
           >
             إلغاء
@@ -122,7 +113,7 @@ const confirmDeleteGoupe = () => {
       position: 'top-center',
       style: { borderRadius: '12px', border: '1px solid #eee' }
     });
-};
+  };
 
   return (<>
     <Helmet>
@@ -131,9 +122,9 @@ const confirmDeleteGoupe = () => {
 
     {loading ? <ChatLoader /> : <div className="container-fluid vh-100 p-0 overflow-hidden bg-light" style={{ marginTop: '60px' }}>
       <div className="row g-0 h-100">
-        
+
         {/* العمود الجانبي: يعرض أعضاء المجموعة المضافين فقط */}
-        <motion.div 
+        <motion.div
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           className="col-md-4 col-lg-3 border-end bg-white d-none d-md-block h-100 overflow-auto shadow-sm"
@@ -149,7 +140,7 @@ const confirmDeleteGoupe = () => {
                 </div>
                 <div className="text-start">
                   <div className="fw-bold small text-dark">{member.name}</div>
-                  {member._id === currentGroupData.admin && <small className="text-warning fw-bold" style={{fontSize:'9px'}}>مسئول المجموعة</small>}
+                  {member._id === currentGroupData.admin && <small className="text-warning fw-bold" style={{ fontSize: '9px' }}>مسئول المجموعة</small>}
                 </div>
               </div>
             ))}
@@ -168,23 +159,23 @@ const confirmDeleteGoupe = () => {
                     <h6 className="mb-0 fw-bold text-dark">{currentGroupData?.name}</h6>
                     <small className="text-muted small">{currentGroupData?.members?.length || 0} عضو مضاف</small>
                   </div>
-                  <button 
-       onClick={confirmDeleteGoupe} 
-      className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
-    >
-      <i className="fa-solid fa-trash-can"></i>
-    </button> 
+                  <button
+                    onClick={confirmDeleteGoupe}
+                    className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
+                  >
+                    <i className="fa-solid fa-trash-can"></i>
+                  </button>
                 </div>
               </motion.div>
 
               <div className="flex-grow-1 overflow-auto p-4 custom-scrollbar bg-messages-area d-flex flex-column">
                 <AnimatePresence initial={false}>
-                  
+
                   {uniqueMessages.length > 0 ? (
                     uniqueMessages.map((item, index) => {
                       const isMe = String(item?.senderId || item?.sender).replace(/['"]+/g, '') === myId;
-            {console.log(item)}
-                  const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
+
+                      const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
 
                       return (
                         <motion.div
@@ -199,24 +190,24 @@ const confirmDeleteGoupe = () => {
 
                             {!isMe && (
                               <div className="fw-bold mb-1" style={{ fontSize: '10px', color: '#6610f2' }}>
-                                 {currentGroupData?.members?.find(
-      (m: any) => String(m._id) === String(item.senderId || item.sender)
-    )?.name || "عضو"}
+                                {currentGroupData?.members?.find(
+                                  (m: any) => String(m._id) === String(item.senderId || item.sender)
+                                )?.name || "عضو"}
                               </div>
                             )}
 
                             {item.imageUrl && <img src={item.imageUrl} className="w-100 rounded mb-2 shadow-sm" alt="" />}
                             <p className="mb-1 small px-1 text-start">{item.text}</p>
-                            
+
                             <div className="d-flex justify-content-end align-items-center" style={{ fontSize: '9px', opacity: 0.8 }}>
                               <span>{new Date(item.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                             </div>
                           </div>
-                           <div className="d-flex align-items-center gap-3">
- 
+                          <div className="d-flex align-items-center gap-3">
 
-    
-  </div>
+
+
+                          </div>
                         </motion.div>
                       );
                     })
@@ -252,12 +243,12 @@ const confirmDeleteGoupe = () => {
             </>
           ) : (
             <div className="h-100 d-flex align-items-center justify-content-center text-muted">
-               <h5>برجاء اختيار مجموعة للبدء</h5>
+              <h5>برجاء اختيار مجموعة للبدء</h5>
             </div>
           )}
         </div>
       </div>
-       <style>{`
+      <style>{`
         .bg-chat-pattern { background-color: #e5ddd5; position: relative; }
         .bg-messages-area {
           background-image: url("https://user-images.githubusercontent.com");

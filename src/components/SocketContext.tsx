@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
 import api from "./api";
 import toast from 'react-hot-toast';
@@ -99,7 +99,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
      const [userGroups, setUserGroups] = useState<GroupData[]>([]);
      const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
 
-
+const audioRef = useRef(new Audio('/notification.mp3'));
     // get all groups
     useEffect(() => {
         const fetchGroups = async () => {
@@ -153,6 +153,11 @@ useEffect(() => {
             }
             return;
         }
+         const playNotification = () => {
+        audioRef.current.play().catch(() => {
+            console.log("الارشاد: المتصفح منع الصوت، يجب على المستخدم الضغط على أي مكان في الصفحة أولاً.");
+        });
+    };
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
@@ -177,13 +182,16 @@ useEffect(() => {
                 },
             });
         });
-    const notifySound = new Audio('/notification.mp3');
+  
 
         newSocket.on("get_history", (history: MsgData[]) => {
             setMessages(history);
         });
         
 newSocket.on("receive_group_msg", (data: MsgData) => {
+    if (String(data.senderId) !== String(userId)) {
+            playNotification();
+        }
 
  setMessages((prev) => {
                 const isDuplicate = prev.some(m => 
@@ -227,10 +235,9 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
                         senderName: senderObj ? senderObj.name : "Unknown",
                         senderId: incomingSenderId
                     });
-                    notifySound.currentTime = 0; 
-        notifySound.play().catch(error => { 
-            console.warn("Audio play failed (waiting for user interaction):", error);
-        });
+       if (String(data.senderId) !== String(userId)) {
+            playNotification();
+        }
         if (navigator.vibrate) navigator.vibrate(200); 
                     return currentList;
                 });
