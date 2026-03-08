@@ -193,15 +193,26 @@ useEffect(() => {
 //     });
 // });
 newSocket.on("receive_group_msg", (data: MsgData) => {
-    setMessages((prev) => {
-        // منع التكرار: الباك إند يرسل _id، نتحقق منه هنا
-        const isDuplicate = prev.some(m => m._id === data._id);
-        if (isDuplicate) return prev;
+//     setMessages((prev) => {
+//         // منع التكرار: الباك إند يرسل _id، نتحقق منه هنا
+//         const isDuplicate = prev.some(m => m._id === data._id);
+//         if (isDuplicate) return prev;
         
-        // التأكد من أن الرسالة تخص المجموعة المختارة حالياً (اختياري لزيادة الدقة)
-        return [...prev, data];
-    });
-});
+//         // التأكد من أن الرسالة تخص المجموعة المختارة حالياً (اختياري لزيادة الدقة)
+//         return [...prev, data];
+//     });
+// });
+ setMessages((prev) => {
+                // فحص دقيق جداً: نتحقق من الـ _id أو (النص والوقت للمرسل نفسه)
+                const isDuplicate = prev.some(m => 
+                    (m._id && m._id === data._id) || 
+                    (m.senderId === data.senderId && m.text === data.text && m.createdAt === data.createdAt)
+                );
+                
+                if (isDuplicate) return prev;
+                return [...prev, data];
+            });
+        });
 
 // newSocket.on("receive_group_msg", (data: MsgData) => {
 //     setMessages((prev) => {
@@ -342,11 +353,11 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             timestamps: new Date().toISOString(),
             _id: tempId // نعطيها ID مؤقت فوراً
         };
-setMessages(prev => {
-  const exists = prev.find(m => m._id === newMsg._id);
-  if (exists) return prev; // إذا كانت موجودة لا تضفها
-  return [...prev, newMsg];
-});
+// setMessages(prev => {
+//   const exists = prev.find(m => m._id === newMsg._id);
+//   if (exists) return prev; // إذا كانت موجودة لا تضفها
+//   return [...prev, newMsg];
+// });
 
         // إرسالها للسيرفر
          socket.emit("send_group_msg", { roomId, msg, imageUrl });
