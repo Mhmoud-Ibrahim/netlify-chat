@@ -178,7 +178,7 @@
 //                       const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
 
 //                       return (
-         
+
 //                         <motion.div
 //                           key={msgKey}
 //                           initial={{ opacity: 0, y: 15, scale: 0.95 }}
@@ -425,10 +425,10 @@ export function GroupChat() {
                   </div>
                 </div>
                 <button
-                    onClick={confirmDeleteGoupe}
-                    className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
-                  >
-                    <i className="fa-solid fa-trash-can"></i>
+                  onClick={confirmDeleteGoupe}
+                  className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
+                >
+                  <i className="fa-solid fa-trash-can"></i>
                 </button>
               </motion.div>
 
@@ -459,13 +459,13 @@ export function GroupChat() {
                             )}
 
                             {item.imageUrl && (
-                              <img src={item.imageUrl} className="w-100 rounded-3 mb-2 shadow-sm" alt="msg" style={{maxHeight:'300px', objectFit:'cover'}} />
+                              <img src={item.imageUrl} className="w-100 rounded-3 mb-2 shadow-sm" alt="msg" style={{ maxHeight: '300px', objectFit: 'cover' }} />
                             )}
-                            
+
                             <p className="m-0 p-1" style={{ wordBreak: "break-word" }}>{item.text}</p>
-                            
+
                             <div className={`text-end ${isMe ? "text-white-50" : "text-muted"}`} style={{ fontSize: "9px", marginTop: "2px" }}>
-                              {item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ""}
+                              {item.createdAt ? new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
                             </div>
                           </div>
                         </motion.div>
@@ -473,9 +473,9 @@ export function GroupChat() {
                     })
                   ) : (
                     /* هذا هو الجزء المسؤول عن رسالة "لا توجد رسائل" */
-                    <motion.div 
-                      initial={{ opacity: 0 }} 
-                      animate={{ opacity: 1 }} 
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       className="h-100 d-flex flex-column align-items-center justify-content-center opacity-50"
                     >
                       <i className="fa-solid fa-comments fa-4x mb-3 text-muted"></i>
@@ -499,7 +499,7 @@ export function GroupChat() {
                     <i className="fa-solid fa-paperclip text-primary"></i>
                   </button>
                   <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
-                  
+
                   <input
                     name="msg"
                     className="form-control rounded-pill border-0 bg-light px-4 shadow-inner"
@@ -508,7 +508,7 @@ export function GroupChat() {
                     onChange={formik.handleChange}
                     value={formik.values.msg}
                   />
-                  
+
                   <button type="submit" disabled={isUploading} className="btn btn-primary rounded-circle shadow d-flex align-items-center justify-content-center" style={{ width: "45px", height: "45px" }}>
                     {isUploading ? <span className="spinner-border spinner-border-sm"></span> : <i className="fa-solid fa-paper-plane"></i>}
                   </button>
@@ -523,19 +523,19 @@ export function GroupChat() {
           )}
         </div>
       </div>
-         <style>{`
-//         .bg-chat-pattern { background-color: #e5ddd5; position: relative; }
-//         .bg-messages-area {
-//           background-image: url("https://user-images.githubusercontent.com");
-//           background-blend-mode: overlay; background-color: rgba(229, 221, 213, 0.9);
-//         }
-//         .bubble-me { border-bottom-right-radius: 2px !important; background-color: #b7e1c6 !important; color: #000 !important; }
-//         .bubble-them { border-bottom-left-radius: 2px !important; }
-//         .btn-delete-msg { position: absolute; top: -10px; right: -10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; cursor: pointer; }
-//         .message-bubble:hover .btn-delete-msg { opacity: 1; }
-//         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-//         .custom-scrollbar::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
-//       `}</style>
+      <style>{`
+         .bg-chat-pattern { background-color: #e5ddd5; position: relative; }
+         .bg-messages-area {
+           background-image: url("https://user-images.githubusercontent.com");
+           background-blend-mode: overlay; background-color: rgba(229, 221, 213, 0.9);
+         }
+         .bubble-me { border-bottom-right-radius: 2px !important; background-color: #b7e1c6 !important; color: #000 !important; }
+         .bubble-them { border-bottom-left-radius: 2px !important; }
+        .btn-delete-msg { position: absolute; top: -10px; right: -10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; cursor: pointer; }
+         .message-bubble:hover .btn-delete-msg { opacity: 1; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
+      `}</style>
     </div>}
     <input type="file" ref={fileInputRef} hidden accept="image/*" onChange={(e) => setSelectedFile(e.target.files?.[0] || null)} />
   </>);
