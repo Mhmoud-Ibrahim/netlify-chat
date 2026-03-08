@@ -178,6 +178,7 @@ export function GroupChat() {
                       const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
 
                       return (
+         
                         <motion.div
                           key={msgKey}
                           initial={{ opacity: 0, y: 15, scale: 0.95 }}
@@ -212,9 +213,10 @@ export function GroupChat() {
                       );
                     })
                   ) : (
-                    <div className="h-100 d-flex align-items-center justify-content-center text-muted opacity-50">
-                      <p>لا توجد رسائل بعد</p>
-                    </div>
+                   <div className="d-flex flex-column align-items-center justify-content-center h-100 opacity-50">
+        <i className="fa-solid fa-comments fa-3x mb-3 text-muted"></i>
+        <p className="fw-bold text-muted">لا توجد رسائل بعد.. ابدأ المحادثة الآن</p>
+      </div>
                   )}
                   <div ref={scrollRef} />
                 </AnimatePresence>
