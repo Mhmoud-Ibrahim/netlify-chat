@@ -155,9 +155,7 @@ useEffect(() => {
             withCredentials: true,
             transports: ['websocket'],
             reconnection: true,  
-            query: { userId: userId },         // إعادة الاتصال تلقائياً
-            reconnectionAttempts: Infinity, // محاولات غير محدودة
-        //    reconnectionDelay: 1000,      
+            query: { userId: userId },         // إعادة الاتصال تلقائيا     
             timeout: 20000,
 
         });
@@ -183,27 +181,9 @@ useEffect(() => {
             setMessages(history);
         });
         
-
-//         newSocket.on("receive_group_msg", (data: MsgData) => {
-//     setMessages((prev) => {
-//         // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
-//         const exists = prev.find(m => m._id === data._id && data._id !== undefined);
-//         if (exists) return prev; 
-//         return [...prev, data];
-//     });
-// });
 newSocket.on("receive_group_msg", (data: MsgData) => {
-//     setMessages((prev) => {
-//         // منع التكرار: الباك إند يرسل _id، نتحقق منه هنا
-//         const isDuplicate = prev.some(m => m._id === data._id);
-//         if (isDuplicate) return prev;
-        
-//         // التأكد من أن الرسالة تخص المجموعة المختارة حالياً (اختياري لزيادة الدقة)
-//         return [...prev, data];
-//     });
-// });
+
  setMessages((prev) => {
-                // فحص دقيق جداً: نتحقق من الـ _id أو (النص والوقت للمرسل نفسه)
                 const isDuplicate = prev.some(m => 
                     (m._id && m._id === data._id) || 
                     (m.senderId === data.senderId && m.text === data.text && m.createdAt === data.createdAt)
@@ -214,18 +194,8 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
             });
         });
 
-// newSocket.on("receive_group_msg", (data: MsgData) => {
-//     setMessages((prev) => {
-//         // إذا كانت الرسالة موجودة بالفعل (بناءً على الـ ID)، لا تضفها
-//         if (prev.find(m => m._id === data._id)) return prev;
-//         return [...prev, data];
-//     });
-// });
-// استقبال الرسائل الخاصة
-
-
         newSocket.on("private_reply", (data: MsgData) => {
-            // setMessages((prev) => [...prev, data]);
+          
              setMessages((prev) => {
         // منع التكرار في الرسائل الخاصة أيضاً
         const isDuplicate = prev.some(m => m._id === data._id);
@@ -341,24 +311,7 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
 
     const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
     if (socket) {
-        // const tempId = `temp-${Date.now()}`; // معرف مؤقت
-        // const newMsg: MsgData = {
-        //     text: msg,
-        //     senderId: userId,
-        //     sender: userId,
-        //     room: roomId,
-        //     imageUrl: imageUrl,
-        //     createdAt: new Date().toISOString(),
-        //     seen: false,
-        //     timestamps: new Date().toISOString(),
-        //     _id: tempId // نعطيها ID مؤقت فوراً
-        // };
-// setMessages(prev => {
-//   const exists = prev.find(m => m._id === newMsg._id);
-//   if (exists) return prev; // إذا كانت موجودة لا تضفها
-//   return [...prev, newMsg];
-// });
-
+     
         // إرسالها للسيرفر
          socket.emit("send_group_msg", { roomId, msg, imageUrl });
     }
