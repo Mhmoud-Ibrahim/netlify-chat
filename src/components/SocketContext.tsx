@@ -27,7 +27,7 @@ export interface MsgData {
 
 export interface UserData {
     id?: string;
-    _id: string;
+    _id: string; 
     name: string;
     email: string;
     userImage?: string;
@@ -71,11 +71,11 @@ export interface SocketContextValue {
     userId: string;
     selectedGroup: string | null;
     setSelectedGroup: (id: string | null) => void;
-    sendGroupMsg: (msg: string, roomId: string, imageUrl?: string) => void;
+        sendGroupMsg: (msg: string, roomId: string, imageUrl?: string) => void;
     fetchGroups: () => Promise<void>;
-
-
-
+   
+   
+  
 }
 
 export const SocketContext = createContext<SocketContextValue | null>(null);
@@ -93,9 +93,9 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     const [notification, setNotification] = useState<{ msg: string, senderName: string, senderId: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [selectedUserDatafromServer, setSelecteduserDatafromServer] = useState<UserData | null>(null);
-    const [allUsers, setAllUsers] = useState<UserData[]>([]);
-    const [userGroups, setUserGroups] = useState<GroupData[]>([]);
-    const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+    const [allUsers, setAllUsers] = useState<UserData[]>([]); 
+     const [userGroups, setUserGroups] = useState<GroupData[]>([]);
+     const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
 
 
     // get all groups
@@ -116,7 +116,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                 setLoading(true);
                 const res = await api.get("/auth/me");
                 if (res.data?.user) {
-                    console.log("checkAuth:" + res.data.user);
+                    console.log( "checkAuth:"+ res.data.user);
                     setUser(res.data.user);
                     setUserId(res.data.user._id || res.data.user.id);
                     setUsername(res.data.user.name);
@@ -126,8 +126,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         };
         checkAuth();
     }, []);
-    // get all users
-    useEffect(() => {
+// get all users
+useEffect(() => {
         const fetchAllUsers = async () => {
             try {
                 const res = await api.get("/auth/all"); // تأكد من مسار الـ API عندك
@@ -139,7 +139,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         if (userId) fetchAllUsers();
     }, [userId]);
 
-
+  
 
 
     useEffect(() => {
@@ -154,10 +154,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
-            reconnection: true,
+            reconnection: true,  
             query: { userId: userId },         // إعادة الاتصال تلقائياً
             reconnectionAttempts: Infinity, // محاولات غير محدودة
-            //    reconnectionDelay: 1000,      
+        //    reconnectionDelay: 1000,      
             timeout: 20000,
 
         });
@@ -165,7 +165,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         newSocket.on("connect", () => {
             setIsConnected(true);
             console.log("Socket connected via Token Cookie ✅");
-            newSocket.emit("online_users")
+             newSocket.emit("online_users")
             toast.success(`You are connected `, {
                 icon: '✅',
                 duration: 700,
@@ -177,61 +177,61 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                 },
             });
         });
-        const notifySound = new Audio('/notification.mp3');
+    const notifySound = new Audio('/notification.mp3');
 
         newSocket.on("get_history", (history: MsgData[]) => {
             setMessages(history);
         });
+        
 
-
-        //         newSocket.on("receive_group_msg", (data: MsgData) => {
-        //     setMessages((prev) => {
-        //         // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
-        //         const exists = prev.find(m => m._id === data._id && data._id !== undefined);
-        //         if (exists) return prev; 
-        //         return [...prev, data];
-        //     });
-        // });
-        newSocket.on("receive_group_msg", (data: MsgData) => {
-            //     setMessages((prev) => {
-            //         // منع التكرار: الباك إند يرسل _id، نتحقق منه هنا
-            //         const isDuplicate = prev.some(m => m._id === data._id);
-            //         if (isDuplicate) return prev;
-
-            //         // التأكد من أن الرسالة تخص المجموعة المختارة حالياً (اختياري لزيادة الدقة)
-            //         return [...prev, data];
-            //     });
-            // });
-            setMessages((prev) => {
+//         newSocket.on("receive_group_msg", (data: MsgData) => {
+//     setMessages((prev) => {
+//         // التأكد من أن الرسالة غير موجودة مسبقاً باستخدام المعرف
+//         const exists = prev.find(m => m._id === data._id && data._id !== undefined);
+//         if (exists) return prev; 
+//         return [...prev, data];
+//     });
+// });
+newSocket.on("receive_group_msg", (data: MsgData) => {
+//     setMessages((prev) => {
+//         // منع التكرار: الباك إند يرسل _id، نتحقق منه هنا
+//         const isDuplicate = prev.some(m => m._id === data._id);
+//         if (isDuplicate) return prev;
+        
+//         // التأكد من أن الرسالة تخص المجموعة المختارة حالياً (اختياري لزيادة الدقة)
+//         return [...prev, data];
+//     });
+// });
+ setMessages((prev) => {
                 // فحص دقيق جداً: نتحقق من الـ _id أو (النص والوقت للمرسل نفسه)
-                const isDuplicate = prev.some(m =>
-                    (m._id && m._id === data._id) ||
+                const isDuplicate = prev.some(m => 
+                    (m._id && m._id === data._id) || 
                     (m.senderId === data.senderId && m.text === data.text && m.createdAt === data.createdAt)
                 );
-
+                
                 if (isDuplicate) return prev;
                 return [...prev, data];
             });
         });
 
-        // newSocket.on("receive_group_msg", (data: MsgData) => {
-        //     setMessages((prev) => {
-        //         // إذا كانت الرسالة موجودة بالفعل (بناءً على الـ ID)، لا تضفها
-        //         if (prev.find(m => m._id === data._id)) return prev;
-        //         return [...prev, data];
-        //     });
-        // });
-        // استقبال الرسائل الخاصة
+// newSocket.on("receive_group_msg", (data: MsgData) => {
+//     setMessages((prev) => {
+//         // إذا كانت الرسالة موجودة بالفعل (بناءً على الـ ID)، لا تضفها
+//         if (prev.find(m => m._id === data._id)) return prev;
+//         return [...prev, data];
+//     });
+// });
+// استقبال الرسائل الخاصة
 
 
         newSocket.on("private_reply", (data: MsgData) => {
             // setMessages((prev) => [...prev, data]);
-            setMessages((prev) => {
-                // منع التكرار في الرسائل الخاصة أيضاً
-                const isDuplicate = prev.some(m => m._id === data._id);
-                if (isDuplicate) return prev;
-                return [...prev, data];
-            });
+             setMessages((prev) => {
+        // منع التكرار في الرسائل الخاصة أيضاً
+        const isDuplicate = prev.some(m => m._id === data._id);
+        if (isDuplicate) return prev;
+        return [...prev, data];
+    });
             const incomingSenderId = String(data.senderId).replace(/['"]+/g, '');
             const currentUserId = String(userId).replace(/['"]+/g, '');
 
@@ -255,18 +255,18 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                         senderName: senderObj ? senderObj.name : "Unknown",
                         senderId: incomingSenderId
                     });
-                    notifySound.currentTime = 0;
-                    notifySound.play().catch(error => {
-                        console.warn("Audio play failed (waiting for user interaction):", error);
-                    });
-                    if (navigator.vibrate) navigator.vibrate(200);
+                    notifySound.currentTime = 0; 
+        notifySound.play().catch(error => { 
+            console.warn("Audio play failed (waiting for user interaction):", error);
+        });
+        if (navigator.vibrate) navigator.vibrate(200); 
                     return currentList;
                 });
             }
         });
 
         newSocket.on("online_users", (users: OnlineUser[]) => setOnlineUsers(users));
-
+      
         newSocket.on("message_deleted", ({ messageId }) => {
             setMessages((prev) => prev.filter(m => m._id !== messageId));
         });
@@ -296,46 +296,31 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             newSocket.off("messages_read");
             newSocket.off("private_reply");
             newSocket.off("get_history");
-            newSocket.off("receive_group_msg");
+            newSocket.off("receive_group_msg"); 
             newSocket.close();
         };
     }, [userId]);
 
 
     // 2. Callbacks
-    //updateUserData
     const updateUserData = useCallback((newData: Partial<UserData>) => {
         setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
     }, []);
-    // deleteMsg
+
     const deleteMsg = useCallback((msg: MsgData) => {
         if (socket && msg._id) {
             socket.emit("delete_msg", { messageId: msg._id, receiverId: msg.receiverId });
         }
     }, [socket]);
-    // fetchGroups
     const fetchGroups = useCallback(async () => {
-        try {
-            const res = await api.get("/auth/groups");
-            // setUserGroups
-            setUserGroups(res.data.groups || []);
-        } catch (err) {
-            console.error("Failed to fetch groups", err);
-        }
-    }, [userId]);
+    try {
+        const res = await api.get("/auth/groups");
+        setUserGroups(res.data.groups || []);
+    } catch (err) {
+        console.error("Failed to fetch groups", err);
+    }
+}, [userId]);
 
-
-
-    // دوال الإرسال
-    //1-- sendPrivateMsg
-    const sendPrivateMsg = useCallback((msg: string, receiverId: string, imageUrl?: string) => {
-        if (socket) socket.emit("private_msg", {
-            msg,
-            receiverId,
-            imageUrl: imageUrl || null
-        });
-    }, [socket, isConnected]);
-    //2-- deleteSenderMessages
     const deleteSenderMessages = useCallback(() => {
         if (socket && selectedUser) {
             socket.emit("delete_sender_messages", { receiverId: selectedUser });
@@ -344,22 +329,47 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     const clearNotification = useCallback(() => setNotification(null), []);
 
-    //3-- sendGroupMsg
+  
+  // دوال الإرسال
+    const sendPrivateMsg = useCallback((msg: string, receiverId: string, imageUrl?: string) => {
+        if (socket) socket.emit("private_msg", { 
+            msg,
+            receiverId,
+            imageUrl: imageUrl || null });
+    }, [socket,isConnected]);
+  
     const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
-        if (socket && isConnected) {
-            // إرسالها للسيرفر
-            socket.emit("send_group_msg", { roomId, msg, imageUrl });
-        }
-    }, [socket, userId]);
+    if (socket &&isConnected) {
+        // const tempId = `temp-${Date.now()}`; // معرف مؤقت
+        // const newMsg: MsgData = {
+        //     text: msg,
+        //     senderId: userId,
+        //     sender: userId,
+        //     room: roomId,
+        //     imageUrl: imageUrl,
+        //     createdAt: new Date().toISOString(),
+        //     seen: false,
+        //     timestamps: new Date().toISOString(),
+        //     _id: tempId // نعطيها ID مؤقت فوراً
+        // };
+// setMessages(prev => {
+//   const exists = prev.find(m => m._id === newMsg._id);
+//   if (exists) return prev; // إذا كانت موجودة لا تضفها
+//   return [...prev, newMsg];
+// });
 
-    //4- الانضمام للمجموعة عند اختيارها
+        // إرسالها للسيرفر
+         socket.emit("send_group_msg", { roomId, msg, imageUrl });
+    }
+}, [socket, userId]);
+
+
+    // الانضمام للمجموعة عند اختيارها
     useEffect(() => {
         if (socket && selectedGroup) {
             socket.emit("join_group", { roomId: selectedGroup });
         }
     }, [socket, selectedGroup]);
-
-
 
     const logout = async () => {
         try {
@@ -377,39 +387,39 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     return (
         <SocketContext.Provider value={{
-            socket,
-            isConnected,
-            messages,
-            clearNotification,
-            sendPrivateMsg,
-            notification,
-            allUsers,
-            userId,
-            setUserId,
-            sendMsg: (msg) => socket?.emit("chatMsg", msg),
-            setSelectedUser,
-            updateUserData,
-            selectedUser,
-            onlineUsers,
-            logout,
-            userName,
-            setUsername,
-            selectedUserDatafromServer,
-            sendGroupMsg,
-            userGroups,
-            selectedGroup, // تأكد من إضافة هذه
-            setSelectedGroup, // تأكد من إضافة هذه
-            deleteMsg,
-            deleteSenderMessages,
-            user,
-            setUser,
-            loading,
-            setLoading,
-            setSelecteduserDatafromServer,
-            fetchGroups
-        }}>
-            {children}
-        </SocketContext.Provider>
+    socket, 
+    isConnected, 
+    messages, 
+    clearNotification, 
+    sendPrivateMsg, 
+    notification,
+    allUsers,
+    userId, 
+    setUserId,
+    sendMsg: (msg) => socket?.emit("chatMsg", msg), 
+    setSelectedUser, 
+    updateUserData,
+    selectedUser, 
+    onlineUsers, 
+    logout, 
+    userName, 
+    setUsername, 
+    selectedUserDatafromServer, 
+    sendGroupMsg, 
+    userGroups,
+    selectedGroup, // تأكد من إضافة هذه
+    setSelectedGroup, // تأكد من إضافة هذه
+    deleteMsg, 
+    deleteSenderMessages, 
+    user, 
+    setUser, 
+    loading, 
+    setLoading, 
+    setSelecteduserDatafromServer,
+    fetchGroups
+}}>
+    {children}
+</SocketContext.Provider>
 
     );
 }
