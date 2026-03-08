@@ -168,6 +168,12 @@ const confirmDeleteGoupe = () => {
                     <h6 className="mb-0 fw-bold text-dark">{currentGroupData?.name}</h6>
                     <small className="text-muted small">{currentGroupData?.members?.length || 0} عضو مضاف</small>
                   </div>
+                  <button 
+       onClick={confirmDeleteGoupe} 
+      className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
+    >
+      <i className="fa-solid fa-trash-can"></i>
+    </button> 
                 </div>
               </motion.div>
 
@@ -207,12 +213,7 @@ const confirmDeleteGoupe = () => {
                            <div className="d-flex align-items-center gap-3">
  
 
-    <button 
-       onClick={confirmDeleteGoupe} 
-      className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
-    >
-      <i className="fa-solid fa-trash-can"></i>
-    </button> 
+    
   </div>
                         </motion.div>
                       );
