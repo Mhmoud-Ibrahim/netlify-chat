@@ -244,7 +244,7 @@ export function UsersList() {
               </div>
 
               {isSelected && (
-                <i className="fa-solid fa-comment text-primary fa-xs animate__animated animate__fadeInRight"></i>
+                <i className="fa-solid  fa-comment text-primary fa-xs animate__animated animate__fadeInRight"></i>
               )}
             </button>
           );
