@@ -125,8 +125,8 @@ console.log(data);
                 <div className="rounded-circle bg-white p-1 shadow-sm position-relative">
                   <div className="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-inner" 
                        style={{ width: "120px", height: "120px", overflow: "hidden" }}>
-                   {user?.fulluserImage ? (
-                      <img src={user.fulluserImage} className="w-100 h-100 object-fit-cover" alt="Profile" />
+                   {user?.fulluserImage  ? (
+                      <img src={user.fulluserImage || user.userImage ||user?.fullImageUrl} className="w-100 h-100 object-fit-cover" alt="Profile" />
                     ) : (
                       <i className="fa-solid fa-user fa-4x text-secondary mt-3"></i>
                     )}

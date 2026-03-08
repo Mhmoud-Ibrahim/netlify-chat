@@ -32,6 +32,7 @@ export interface UserData {
     email: string;
     userImage?: string;
     fulluserImage?: string;
+    fullImageUrl?: string;
     createdAt?: string;
 }
 export interface GroupData {
