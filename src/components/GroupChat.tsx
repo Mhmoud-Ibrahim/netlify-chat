@@ -183,7 +183,7 @@ const confirmDeleteGoupe = () => {
                   {uniqueMessages.length > 0 ? (
                     uniqueMessages.map((item, index) => {
                       const isMe = String(item?.senderId || item?.sender).replace(/['"]+/g, '') === myId;
-            
+            {console.log(item)}
                   const msgKey = item._id ? String(item._id) : `temp-${index}-${Date.now()}`;
 
                       return (
