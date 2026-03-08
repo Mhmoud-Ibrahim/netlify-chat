@@ -335,11 +335,12 @@ newSocket.on("receive_group_msg", (data: MsgData) => {
         if (socket) socket.emit("private_msg", { 
             msg,
             receiverId,
+            senderId: userId,
             imageUrl: imageUrl || null });
-    }, [socket,isConnected]);
-  
+    }, [socket]);
+
     const sendGroupMsg = useCallback((msg: string, roomId: string, imageUrl?: string) => {
-    if (socket &&isConnected) {
+    if (socket) {
         // const tempId = `temp-${Date.now()}`; // معرف مؤقت
         // const newMsg: MsgData = {
         //     text: msg,
