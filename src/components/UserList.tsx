@@ -89,7 +89,7 @@ export function UsersList() {
               </div>
 
               <div className="flex-grow-1 text-start">
-                <div className={`mb-0 text-truncate ${u.isOnline ? 'fw-bold text-success fadeIn' :'text-dark'}`} style={{ maxWidth: '150px' }}>
+                <div className={`mb-0 text-truncate ${u.isOnline ? 'fw-bold text-success' :'text-dark'}`} style={{ maxWidth: '150px' }}>
                   {u.name?.split(' ').slice(0, 2).join(" ")}
                 </div>
                 <small className={`${u.isOnline ? 'text-success' : 'text-muted'} d-block`} style={{ fontSize: '11px' }}>
