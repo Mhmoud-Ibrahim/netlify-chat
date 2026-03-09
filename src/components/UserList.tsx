@@ -14,7 +14,6 @@ export function UsersList() {
 
   const currentUserId = String(userId || "").replace(/['"]+/g, '');
 
-  // جلب المستخدمين وتحديد حالة الاتصال والترتيب (المتصل أولاً)
   const sortedUsers = allUsers
     ?.filter(u => String(u._id).replace(/['"]+/g, '') !== currentUserId)
     ?.map(user => {
