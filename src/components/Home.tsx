@@ -16,8 +16,8 @@ export function Home() {
   if (!socketContext) return null;
 
   const {
-    selectedUserDatafromServer,
-    setSelecteduserDatafromServer,
+    
+    setSelectedUser,
     sendPrivateMsg,
     messages,
     userId,
@@ -68,12 +68,12 @@ export function Home() {
 
   async function getselectedData (selectedUser:any){
    // console.log(selectedUserDatafromServer)
-    if (selectedUserDatafromServer?.id === selectedUser) return;
-    if(!selectedUser)return
+   if(!selectedUser)return
+   if (selectedUserData?.userId === selectedUser) return;
   const res =await api.get('/auth/user',{params:{id:selectedUser}});
   if(res){
-    // console.log(res.data.user);
-    setSelecteduserDatafromServer(res.data.user);
+    console.log(res.data.user)
+    setSelectedUser(res.data.user);
   }
 }
 
@@ -134,7 +134,9 @@ useEffect(() => {
     },
   });
 
-
+useEffect(() => {
+  console.log(selectedUserData)
+})
   return (<>
   <Helmet>
         <title>chatnow </title>
@@ -165,9 +167,9 @@ useEffect(() => {
                   >
                 <div className="d-flex align-items-center">
                   <div className="position-relative">
-                  {selectedUserDatafromServer && selectedUserDatafromServer.fulluserImage ?
+                  {selectedUserData?
                   <>
-                  <img src={selectedUserDatafromServer?.fulluserImage} 
+                  <img src={selectedUserData?selectedUserData.fullUserImage||selectedUserData.userImage :  "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
                   className="rounded-circle" alt="Profile" 
                   style={{ width: "45px", height: "45px", objectFit: "cover" }} />
                   </> 
@@ -188,12 +190,11 @@ useEffect(() => {
  
 
     <button 
-   onClick={confirmClearChat} 
-   className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
-   title="حذف المحادثة بالكامل"
->
-  <i className="fa-solid fa-trash-can"></i>
-</button>  
+       onClick={confirmClearChat} 
+      className="btn btn-outline-danger btn-sm rounded-pill border-0 shadow-sm"
+    >
+      <i className="fa-solid fa-trash-can"></i>
+    </button> 
   </div></motion.div>
 
     

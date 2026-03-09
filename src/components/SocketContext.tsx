@@ -7,7 +7,7 @@ export interface OnlineUser {
     userId: string;
     name: string;
     userImage?: string;
-    fulluserImage?: string;
+    fullUserImage?: string;
 }
 
 export interface MsgData {
@@ -31,7 +31,7 @@ export interface UserData {
     name: string;
     email: string;
     userImage?: string;
-    fulluserImage?: string;
+    fullUserImage?: string;
     fullImageUrl?: string;
     createdAt?: string;
 }
@@ -114,6 +114,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                     setUser(res.data.user);
                     setUserId(res.data.user._id || res.data.user.id);
                     setUsername(res.data.user.name);
+
                 }
             } catch (err) { console.error("Auth check failed:", err); }
             finally { setLoading(false); }

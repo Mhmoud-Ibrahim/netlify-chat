@@ -13,7 +13,6 @@ export function UsersList() {
   const { onlineUsers, allUsers, setSelectedUser, userId, selectedUser, loading } = context;
 
   const currentUserId = String(userId || "").replace(/['"]+/g, '');
-
   const sortedUsers = allUsers
     ?.filter(u => String(u._id).replace(/['"]+/g, '') !== currentUserId)
     ?.map(user => {
@@ -27,6 +26,7 @@ export function UsersList() {
   const handleUserSelect = (id: string) => {
     const cleanId = String(id).replace(/['"]+/g, '');
     setSelectedUser(cleanId);
+    // console.log("selectedUser",cleanId)
     if (location.pathname === "/users") {
       navigate("/home");
     }
@@ -68,9 +68,9 @@ export function UsersList() {
             >
               <div className="position-relative  me-3">
                 <div   style={{ width: '38px', height: '38px'}} >
-                  {u.fulluserImage || u.userImage ? (
+                  {u.fullUserImage || u.userImage ? (
                     <img
-                      src={u.fulluserImage || u.userImage}
+                      src={u.fullUserImage || u.userImage}
                       alt={u.name}
                        className={`w-100 h-100 object-fit-cover border border-2  shadow-sm rounded-circle  ${u.isOnline ? 'border-success ' :'border-secondary'}`}
                        
