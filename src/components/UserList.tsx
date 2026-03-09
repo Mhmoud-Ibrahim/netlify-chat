@@ -45,16 +45,16 @@ export function UsersList() {
       <title>User List </title>
       <meta name="description" content="User List " />
     </Helmet>
-    <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+    <div className="card shadow-sm border-0  rounded-4 overflow-hidden h-100">
       <div className="p-3 bg-white border-bottom d-flex align-items-center justify-content-between">
         <h6 className="mb-0 fw-bold text-dark d-flex align-items-center">
           <span className="pulse-green me-2"></span>
-          المستخدمين ({sortedUsers?.length || 0})
+          USERS ({sortedUsers?.length || 0})
         </h6>
         <i className="fa-solid fa-users text-muted opacity-50"></i>
       </div>
 
-      <div className="list-group list-group-flush custom-scrollbar" style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+      <div className="list-group list-group-flush    custom-scrollbar" style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
         {sortedUsers?.map((u) => {
           const userIdStr = String(u._id || u._id).replace(/['"]+/g, '');
           const isSelected = String(selectedUser || "").replace(/['"]+/g, '') === userIdStr;
@@ -63,7 +63,7 @@ export function UsersList() {
             <button
               key={userIdStr}
               onClick={() => handleUserSelect(userIdStr)}
-              className={`list-group-item list-group-item-action border-0 d-flex align-items-center p-3 transition-all 
+              className={`list-group-item list-group-item-action border-0 d-flex align-items-center  transition-all 
                 }`}
             >
               <div className="position-relative  me-3">
@@ -89,10 +89,10 @@ export function UsersList() {
               </div>
 
               <div className="flex-grow-1 text-start">
-                <div className={`mb-0 text-truncate ${u.isOnline ? 'fw-bold text-success' :'text-dark'}`} style={{ maxWidth: '150px' }}>
+                <div className={`mb-0 text-truncate mx-3 ${u.isOnline ? 'fw-bold text-success' :'text-dark'}`} style={{ maxWidth: '150px' }}>
                   {u.name?.split(' ').slice(0, 2).join(" ")}
                 </div>
-                <small className={`${u.isOnline ? 'text-success' : 'text-muted'} d-block`} style={{ fontSize: '11px' }}>
+                <small className={` mx-3  ${u.isOnline ? 'text-success' : 'text-muted'} d-block`} style={{ fontSize: '11px' }}>
                   {u.isOnline ? "متصل الآن" : "غير متصل"}
                 </small>
               </div>
