@@ -34,7 +34,7 @@ export function UsersList() {
 
   if (loading) {
     return (
-      <div className="p-5 text-center">
+      <div className="p-5 text-center ">
         <div className="spinner-border spinner-border-sm text-primary"></div>
       </div>
     );
