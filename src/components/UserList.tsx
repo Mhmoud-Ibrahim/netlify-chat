@@ -63,7 +63,7 @@ export function UsersList() {
             <button
               key={userIdStr}
               onClick={() => handleUserSelect(userIdStr)}
-              className={`list-group-item list-group-item-action border-0 d-flex align-items-center  transition-all 
+              className={`list-group-item list-group-item-action border-0 d-flex align-items-center p-3 transition-all 
                 }`}
             >
               <div className="position-relative  me-3">
