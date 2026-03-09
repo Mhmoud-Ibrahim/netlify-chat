@@ -26,7 +26,7 @@ export function UsersList() {
   const handleUserSelect = (id: string) => {
     const cleanId = String(id).replace(/['"]+/g, '');
     setSelectedUser(cleanId);
-    // console.log("selectedUser",cleanId)
+    //  console.log("selectedUser",cleanId)
     if (location.pathname === "/users") {
       navigate("/home");
     }
@@ -81,7 +81,7 @@ export function UsersList() {
                       }}
                     />
                   ) : (
-                    <div className="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                    <div className="w-100 h-100 bg-light d-flex rounded-circle align-items-center justify-content-center">
                       <i className="fa-solid fa-user text-secondary"></i>
                     </div>
                   )}

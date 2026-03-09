@@ -34,6 +34,7 @@ export interface UserData {
     fullUserImage?: string;
     fullImageUrl?: string;
     createdAt?: string;
+     [key: string]: any;
 }
 export interface GroupData {
     _id: string;

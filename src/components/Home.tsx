@@ -1,5 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { SocketContext } from "./SocketContext";
 import { useFormik } from "formik";
 import { UsersList } from "./UserList";
 import api from "./api";
@@ -7,11 +6,14 @@ import ChatLoader from "./ChatLoader";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion"; // إضافة Framer Motion
 import { Helmet } from 'react-helmet-async';
+import { SocketContext, type UserData } from "./SocketContext.tsx";
 export function Home() {
   const socketContext = useContext(SocketContext);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  
+  const [chatedUser, setChatedUser] = useState<UserData | null>(null);
  
   if (!socketContext) return null;
 
@@ -24,6 +26,7 @@ export function Home() {
     selectedUser,
     onlineUsers,
     user,
+    allUsers,
     deleteMsg,
     deleteFullChat,
     socket,
@@ -84,10 +87,12 @@ useEffect(() => {
     socket.emit("get_chat_history", { receiverId: selectedUser });
   }
 getselectedData(selectedUser)
+getUserById(selectedUser)
 }, [selectedUser, socket]); // سيعمل الكود كلما تغير الشخص المختار
 
  
 useEffect(() => {
+ 
   if (targetId && socket && messages.length > 0) {
     const hasUnread = messages.some(m => 
       !m.seen && 
@@ -133,10 +138,15 @@ useEffect(() => {
       }
     },
   });
+function getUserById(id: any) {
+  const user = allUsers.find((u: any) => u.id === id);
+  console.log("user new",user)
+  setChatedUser(user || null);
+  return user || null;  
+}
 
-useEffect(() => {
-  console.log(selectedUserData)
-})
+
+
   return (<>
   <Helmet>
         <title>chatnow </title>
@@ -169,8 +179,8 @@ useEffect(() => {
                   <div className="position-relative">
                   {selectedUserData?
                   <>
-                  <img src={selectedUserData?selectedUserData.fullUserImage||selectedUserData.userImage :  "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
-                  className="rounded-circle" alt="Profile" 
+                  <img src={chatedUser?.fullUserImage} 
+                  className="rounded-circle" alt={chatedUser?.name} 
                   style={{ width: "45px", height: "45px", objectFit: "cover" }} />
                   </> 
                   :<div className="rounded-circle bg-light border d-flex align-items-center justify-content-center overflow-hidden" style={{ width: "45px", height: "45px" }}>
