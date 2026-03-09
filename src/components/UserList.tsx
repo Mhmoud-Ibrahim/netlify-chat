@@ -63,7 +63,7 @@ export function UsersList() {
             <button
               key={userIdStr}
               onClick={() => handleUserSelect(userIdStr)}
-              className={`list-group-item list-group-item-action border-0 d-flex align-items-center py-3 px-3 transition-all ${isSelected ? 'bg-primary-subtle border-start border-primary border-4 shadow-sm' : ''
+              className={`list-group-item list-group-item-action border-0 d-flex align-items-center py-3 px-3 transition-all ${isSelected ? 'bg-primary-subtle border-start border-primary border-3 shadow-sm' : ''
                 }`}
             >
               <div className="position-relative  me-3">
