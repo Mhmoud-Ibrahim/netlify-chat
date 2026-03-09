@@ -63,16 +63,16 @@ export function UsersList() {
             <button
               key={userIdStr}
               onClick={() => handleUserSelect(userIdStr)}
-              className={`list-group-item list-group-item-action border-0 d-flex align-items-center py-3 px-3 transition-all ${isSelected ? 'bg-primary-subtle border-start border-primary border-3 shadow-sm' : ''
+              className={`list-group-item list-group-item-action border-0 d-flex align-items-center  transition-all 
                 }`}
             >
               <div className="position-relative  me-3">
-                <div className="rounded-circle  border border-3 shadow-sm"  style={{ width: '38px', height: '38px'}} >
+                <div className={`rounded-circle  border border-2  shadow-sm ${u.isOnline ? 'border-success ' :'border-secondary' }`}  style={{ width: '38px', height: '38px'}} >
                   {u.fulluserImage || u.userImage ? (
                     <img
                       src={u.fulluserImage || u.userImage}
                       alt={u.name}
-                       className={`"w-100 h-100 object-fit-cover border border-3 rounded-circle "${u.isOnline ? ' border border-3 border-success rounded-circle' :' border border-3 border-secondary rounded-circle'}`}
+                       className={`"w-100 h-100 object-fit-cover  rounded-circle "`}
                        
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
