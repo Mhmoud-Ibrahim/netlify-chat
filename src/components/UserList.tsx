@@ -67,12 +67,12 @@ export function UsersList() {
                 }`}
             >
               <div className="position-relative  me-3">
-                <div className={`rounded-circle  border border-2  shadow-sm ${u.isOnline ? 'border-success ' :'border-secondary' }`}  style={{ width: '38px', height: '38px'}} >
+                <div   style={{ width: '38px', height: '38px'}} >
                   {u.fulluserImage || u.userImage ? (
                     <img
                       src={u.fulluserImage || u.userImage}
                       alt={u.name}
-                       className={`"w-100 h-100 object-fit-cover  rounded-circle "`}
+                       className={`w-100 h-100 object-fit-cover border border-2  shadow-sm rounded-circle  ${u.isOnline ? 'border-success ' :'border-secondary'}`}
                        
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
