@@ -47,7 +47,7 @@ export interface SocketContextValue {
     setSelecteduserDatafromServer: React.Dispatch<React.SetStateAction<UserData | null>>;
     sendMsg: (msg: MsgData) => void;
     deleteMsg: (msg: MsgData) => void;
-    deleteSenderMessages: () => void;
+    deleteFullChat: (receiverId: string) => void;
     deleteGroup: (roomId: string) => void;
     setUserId: React.Dispatch<React.SetStateAction<string>>;
     sendPrivateMsg: (msg: string, receiverId: string, imageUrl?: string) => void;
@@ -245,9 +245,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
         newSocket.on("online_users", (users: OnlineUser[]) => setOnlineUsers(users));
 
+    
         newSocket.on("message_deleted", ({ messageId }) => {
-            setMessages((prev) => prev.filter(m => m._id !== messageId));
-        });
+    setMessages((prev) => prev.filter(msg => msg._id !== messageId));
+});
         newSocket.on("messages_read", ({ readerId }) => {
             setMessages(prev => prev.map(m => {
                 if (String(m.receiverId).replace(/['"]+/g, '') === String(readerId)) {
@@ -269,10 +270,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
         newSocket.on("group_deleted", ({ roomId }) => {
-            // إزالة المجموعة من القائمة محلياً
             setUserGroups((prev) => prev.filter(g => g._id !== roomId));
 
-            // إذا كان المستخدم يفتح هذه المجموعة حالياً، نغلقها
             if (selectedGroup === roomId) {
                 setSelectedGroup(null);
                 setMessages([]);
@@ -304,11 +303,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         setUser((prev) => (prev ? { ...prev, ...newData } : (newData as UserData)));
     }, []);
 
-    const deleteMsg = useCallback((msg: MsgData) => {
-        if (socket && msg._id) {
-            socket.emit("delete_msg", { messageId: msg._id, receiverId: msg.receiverId });
-        }
-    }, [socket]);
+   const deleteMsg = useCallback((msg: MsgData) => {
+    if (socket && msg._id) {
+        setMessages((prev) => prev.filter(m => m._id !== msg._id));
+        socket.emit("delete_message", { messageId: msg._id, receiverId: msg.receiverId });
+    }
+}, [socket]);
     const fetchGroups = useCallback(async () => {
         try {
             const res = await api.get("/auth/groups");
@@ -318,11 +318,23 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         }
     }, [userId]);
 
-    const deleteSenderMessages = useCallback(() => {
-        if (socket && selectedUser) {
-            socket.emit("delete_sender_messages", { receiverId: selectedUser });
-        }
-    }, [socket, selectedUser]);
+//    const deleteSenderMessages = useCallback(() => {
+//     if (socket && selectedUser) {
+//         // حذف الرسائل محلياً من القائمة المعروضة
+//         setMessages((prev) => prev.filter(msg => 
+//             msg.senderId !== userId || msg.receiverId !== selectedUser
+//         ));
+        
+//         socket.emit("delete_sender_messages", { receiverId: selectedUser });
+//     }
+// }, [socket, selectedUser, userId]); // أضف userId للتبعيات
+const deleteFullChat = useCallback((receiverId: string) => {
+    if (socket && receiverId) {
+        setMessages([]);
+        socket.emit("delete_full_chat", { receiverId });
+        toast.success("Chat cleared");
+    }
+}, [socket]);
 
 
     const deleteGroup = useCallback((roomId: string) => {
@@ -401,7 +413,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             selectedGroup, // تأكد من إضافة هذه
             setSelectedGroup, // تأكد من إضافة هذه
             deleteMsg,
-            deleteSenderMessages,
+            deleteFullChat,
             deleteGroup,
             user,
             setUser,
