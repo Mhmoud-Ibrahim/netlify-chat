@@ -319,13 +319,13 @@ export function Profile() {
                   <div className="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-inner" 
                        style={{ width: "120px", height: "120px", overflow: "hidden" }}>
                     <AnimatePresence mode="wait">
-                      {user?.fulluserImage ? (
+                      {user?.fullUserImage ? (
                         <motion.img 
-                          key={user.fulluserImage}
+                          key={user.fullUserImage}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
-                          src={user.fulluserImage} 
+                          src={user.fullUserImage} 
                           className="w-100 h-100 object-fit-cover" 
                           alt="Profile" 
                         />
