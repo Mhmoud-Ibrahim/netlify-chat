@@ -101,15 +101,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     const audioRef = useRef(new Audio('/notification.mp3'));
     // get all groups
-    useEffect(() => {
-        const fetchGroups = async () => {
-            try {
-                const res = await api.get("/auth/groups");
-                setUserGroups(res.data.groups || []);
-            } catch (err) { console.error("Failed to fetch groups", err); }
-        };
-        if (userId) fetchGroups();
-    }, [userId]);
+   
 
     // التحقق من الجلسة
     useEffect(() => {
@@ -118,7 +110,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                 setLoading(true);
                 const res = await api.get("/auth/me");
                 if (res.data?.user) {
-                    console.log("checkAuth:" + res.data.user);
+                    console.log("checkAuth:" , res.data.user);
                     setUser(res.data.user);
                     setUserId(res.data.user._id || res.data.user.id);
                     setUsername(res.data.user.name);
@@ -131,16 +123,27 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     // get all users
     useEffect(() => {
         const fetchAllUsers = async () => {
-            try {
-                const res = await api.get("/auth/all"); // تأكد من مسار الـ API عندك
-                setAllUsers(res.data.users || res.data);
-            } catch (err) {
-                console.error("Failed to fetch users", err);
-            }
+                const res = await api.get("/auth/all");
+                if(res.data.status == "success"){
+                    setAllUsers(res.data.users);
+                // console.log(res.data.users);
+               // console.log(  "socketProvider",res.data.users);
+               // console.log(allUsers);
+                } // تأكد من مسار الـ API عندك
+                
+             
         };
         if (userId) fetchAllUsers();
     }, [userId]);
-
+ useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                const res = await api.get("/auth/groups");
+                setUserGroups(res.data.groups || []);
+            } catch (err) { console.error("Failed to fetch groups", err); }
+        };
+        if (userId) fetchGroups();
+    }, [userId]);
 
 
 

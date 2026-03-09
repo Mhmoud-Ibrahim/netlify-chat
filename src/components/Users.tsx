@@ -1,42 +1,16 @@
 import { useContext } from 'react';
-
+import { UsersList } from './UserList';
 import { SocketContext } from './SocketContext';
 import ChatLoader from './ChatLoader';
 import { Helmet } from 'react-helmet-async';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 
 function Users() {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const socketContext = useContext(SocketContext);
-
-
-    if (socketContext?.loading) {
+    const context = useContext(SocketContext);
+    if (context?.loading) {
         return <ChatLoader />;
     }
-    if (!socketContext) return null;
-    const { onlineUsers, allUsers, setSelectedUser, userId, selectedUser } = socketContext;
-
-    const currentUserId = String(userId || "").replace(/['"]+/g, '');
-
-    const sortedUsers = allUsers
-        ?.filter(u => String(u._id).replace(/['"]+/g, '') !== currentUserId)
-        ?.map(user => {
-            const isOnline = onlineUsers?.some(online =>
-                String(online.userId).replace(/['"]+/g, '') === String(user._id).replace(/['"]+/g, '')
-            );
-            return { ...user, isOnline };
-        })
-        .sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
-
-    const handleUserSelect = (id: string) => {
-        const cleanId = String(id).replace(/['"]+/g, '');
-        setSelectedUser(cleanId);
-        if (location.pathname === "/users") {
-            navigate("/home");
-        }
-    };
+   
 
     return <>
         <Helmet>
@@ -63,92 +37,7 @@ function Users() {
                 <div className="row justify-content-center">
                     <div className="col-lg-11">
                         <div className="custom-users-page animate__animated animate__fadeInUp">
-                            <div className="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
-                                <div className="p-3 bg-white border-bottom d-flex align-items-center justify-content-between">
-                                    <h6 className="mb-0 fw-bold text-dark d-flex align-items-center">
-                                        <span className="pulse-green me-2"></span>
-                                        المستخدمين ({sortedUsers?.length || 0})
-                                    </h6>
-                                    <i className="fa-solid fa-users text-muted opacity-50"></i>
-                                </div>
-
-                                <div className="list-group list-group-flush custom-scrollbar" style={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
-                                    {sortedUsers?.map((u) => {
-                                        const userIdStr = String(u._id || u._id).replace(/['"]+/g, '');
-                                        const isSelected = String(selectedUser || "").replace(/['"]+/g, '') === userIdStr;
-
-                                        return (
-                                            <button
-                                                key={userIdStr}
-                                                onClick={() => handleUserSelect(userIdStr)}
-                                                className={`list-group-item list-group-item-action border-0 d-flex align-items-center py-3 px-3 transition-all ${isSelected ? 'bg-primary-subtle border-start border-primary border-4 shadow-sm' : ''
-                                                    }`}
-                                            >
-                                                <div className="position-relative me-3">
-                                                    <div className="rounded-circle overflow-hidden border border-2 border-warning shadow-sm" style={{ width: '38px', height: '38px' }}>
-                                                        {u.fulluserImage || u.userImage ||u.fullImageUrl? (
-                                                            <img
-                                                                src={u.fulluserImage || u.userImage || u.fullImageUrl}
-                                                                alt={u.name}
-                                                                className="w-100 h-100 object-fit-cover"
-                                                                onError={(e) => {
-                                                                    e.currentTarget.style.display = 'none';
-                                                                    const parent = e.currentTarget.parentElement;
-                                                                    if (parent) parent.innerHTML = '<div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-user text-secondary"></i></div>';
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            <div className="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                                                                <i className="fa-solid fa-user text-secondary"></i>
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    {/* نقطة الحالة ديناميكية */}
-                                                    <span className={`position-absolute bottom-0 end-0 p-1 border border-white rounded-circle ${u.isOnline ? 'bg-success' : 'bg-secondary'}`}></span>
-                                                </div>
-
-                                                <div className="flex-grow-1 text-start">
-                                                    <div className={`mb-0 text-truncate ${isSelected ? 'fw-bold text-primary' : 'fw-bold text-dark'}`} style={{ maxWidth: '150px' }}>
-                                                        {u.name?.split(' ').slice(0, 2).join(" ")}
-                                                    </div>
-                                                    <small className={`${u.isOnline ? 'text-success' : 'text-muted'} d-block`} style={{ fontSize: '11px' }}>
-                                                        {u.isOnline ? "متصل الآن" : "غير متصل"}
-                                                    </small>
-                                                </div>
-
-                                                {isSelected && (
-                                                    <i className="fa-solid fa-comment text-primary fa-xs animate__animated animate__fadeInRight"></i>
-                                                )}
-                                            </button>
-                                        );
-                                    })}
-
-                                    {sortedUsers?.length === 0 && (
-                                        <div className="p-5 text-center text-muted">
-                                            <div className="bg-light rounded-circle d-inline-flex p-3 mb-3">
-                                                <i className="fa-solid fa-user-group fa-2x opacity-25"></i>
-                                            </div>
-                                            <p className="small fw-medium">لا يوجد مستخدمون</p>
-                                            <Link to="/users" className="btn btn-sm btn-outline-primary rounded-pill px-3" >
-                                                تحديث القائمة
-                                            </Link>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <style>{`
-        .pulse-green { width: 8px; height: 8px; background: #28a745; border-radius: 50%; animation: pulse 2s infinite; }
-        @keyframes pulse {
-          0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-          70% { box-shadow: 0 0 0 8px rgba(40, 167, 69, 0); }
-          100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
-        }
-        .transition-all { transition: all 0.2s ease-in-out; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 10px; }
-      `}</style>
-                            </div>
+                            <UsersList />
                         </div>
                     </div>
                 </div>

@@ -66,13 +66,14 @@ export function UsersList() {
               className={`list-group-item list-group-item-action border-0 d-flex align-items-center py-3 px-3 transition-all ${isSelected ? 'bg-primary-subtle border-start border-primary border-4 shadow-sm' : ''
                 }`}
             >
-              <div className="position-relative me-3">
-                <div className="rounded-circle overflow-hidden border border-2 border-warning shadow-sm" style={{ width: '38px', height: '38px' }}>
+              <div className="position-relative  me-3">
+                <div className="rounded-circle  border border-3 shadow-sm"  style={{ width: '38px', height: '38px'}} >
                   {u.fulluserImage || u.userImage ? (
                     <img
                       src={u.fulluserImage || u.userImage}
                       alt={u.name}
-                      className="w-100 h-100 object-fit-cover"
+                       className={`"w-100 h-100 object-fit-cover border border-3 rounded-circle "${u.isOnline ? ' border border-3 border-success rounded-circle' :' border border-3 border-secondary rounded-circle'}`}
+                       
                       onError={(e) => {
                         e.currentTarget.style.display = 'none';
                         const parent = e.currentTarget.parentElement;
@@ -85,9 +86,6 @@ export function UsersList() {
                     </div>
                   )}
                 </div>
-
-                {/* نقطة الحالة ديناميكية */}
-                <span className={`position-absolute bottom-0 end-0 p-1 border border-white rounded-circle ${u.isOnline ? 'bg-success' : 'bg-secondary'}`}></span>
               </div>
 
               <div className="flex-grow-1 text-start">
