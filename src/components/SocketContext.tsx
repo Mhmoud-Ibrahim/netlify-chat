@@ -225,16 +225,16 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                     const senderObj = currentList.find(u =>
                         String(u.userId).replace(/['"]+/g, '') === incomingSenderId
                     );
-                    toast.success(`New message from ${senderObj ? senderObj.name : "Unknown"}`, {
-                        icon: '💬',
-                        duration: 5000,
-                        position: 'top-right',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#123405',
-                            color: 'yellow',
-                        },
-                    });
+                    // toast.success(`New message from ${senderObj ? senderObj.name : "Unknown"}`, {
+                    //     icon: '💬',
+                    //     duration: 5000,
+                    //     position: 'top-right',
+                    //     style: {
+                    //         borderRadius: '10px',
+                    //         background: '#123405',
+                    //         color: 'yellow',
+                    //     },
+                    // });
                     setNotification({
                         msg: data.text || "message is sent",
                         senderName: senderObj ? senderObj.name : "Unknown",
