@@ -190,10 +190,14 @@ function getUserById(id: any) {
                     
                     <span className="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle shadow-sm"></span>
                   </div>
-                  <div className="ms-3">
-                    <h6 className="mb-0 fw-bold">{selectedUserData?.name.split(' ').slice(0,2).join(" ") || "مستخدم"}</h6>
-                    <small className="text-success fw-medium">متصل الآن</small>
-                  </div>
+                   <div className="flex-grow-1 text-start">
+                <div className={`mb-0 text-truncate mx-3 ${selectedUserData ? 'fw-bold text-success' :'text-dark'}`} style={{ maxWidth: '150px' }}>
+                  {selectedUserData?.name?.split(' ').slice(0, 2).join(" ")}
+                </div>
+                <small className={` mx-3  ${selectedUserData ? 'text-success' : 'text-muted'} d-block`} style={{ fontSize: '11px' }}>
+                  {selectedUserData ? "متصل الآن" : "غير متصل"}
+                </small>
+              </div>
                 </div>
    
   <div className="d-flex align-items-center gap-3">
