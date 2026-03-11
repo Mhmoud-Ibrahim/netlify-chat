@@ -187,7 +187,6 @@ function getUserById(id: any) {
                     <i className="fa-solid fa-user fa-xl text-secondary mt-2"></i>
                     </div>
                   }
-                    
                     <span className="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle shadow-sm"></span>
                   </div>
                    <div className="flex-grow-1 text-start">
