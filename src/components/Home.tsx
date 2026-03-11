@@ -152,7 +152,7 @@ function getUserById(id: any) {
         <title>chatnow </title>
         <meta name="description" content="chat now with friends " />
       </Helmet>
-  {loading?<ChatLoader/>:<div className="container-fluid vh-100 p-0 overflow-hidden bg-light" style={{ marginTop: '60px' }}>
+  {loading?<ChatLoader/>:<div className="container-fluid vh-100 p-0 overflow-hidden bg-light mt-5" style={{ marginTop: '60px' }}>
       <div className="row g-0 h-100">
 
          <motion.div 
