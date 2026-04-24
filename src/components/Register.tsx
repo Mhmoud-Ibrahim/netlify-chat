@@ -116,12 +116,12 @@ export default function Register() {
 
         <motion.div variants={itemVariants} className="text-center m-auto">
           {loading ? (
-            <button disabled type='button' className='btn btn-success mt-2 w-50 mb-2'> 
+            <button disabled type='button' className='btn btn-success mt-2 w-100 py-1 mb-2'> 
               <i className='fas fa-spinner fa-spin'></i>
             </button>
           ) : (
             <button disabled={!(formik.dirty && formik.isValid)} type='submit' className='btn btn-danger mt-2 w-50 py-1 mb-2 w-75'>
-              Register
+              تسجيل
             </button>
           )}
  
