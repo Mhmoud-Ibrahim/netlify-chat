@@ -75,8 +75,8 @@ export default function Register() {
           <title>Register </title>
           <meta name="description" content="Register " />
         </Helmet>
-    
-    <form onSubmit={formik.handleSubmit} className="mt-5 d-flex flex-column">
+    <div className="mt-5 d-flex flex-column">
+    <form onSubmit={formik.handleSubmit} >
       <motion.div 
         className="container register col-md-4 mt-5 br-second shadow-lg p-4"
         variants={containerVariants}
@@ -138,5 +138,7 @@ export default function Register() {
           >
             <i className="fab fa-google text-danger"></i> Continue with Google
           </button>
+
+    </div>
   </>
 }
