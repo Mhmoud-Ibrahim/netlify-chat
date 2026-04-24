@@ -124,18 +124,19 @@ export default function Register() {
             </button>
           )}
  
-            <button 
-            type="button" 
-            onClick={handleGoogleLogin} 
-            className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2 mb-2"
-          >
-            <i className="fab fa-google text-danger"></i> Continue with Google
-          </button>
+            
 
         </motion.div>
        
          
       </motion.div>
     </form>
+    <button 
+            type="button" 
+            onClick={handleGoogleLogin} 
+            className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2 mb-2"
+          >
+            <i className="fab fa-google text-danger"></i> Continue with Google
+          </button>
   </>
 }
