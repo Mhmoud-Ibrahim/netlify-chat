@@ -114,9 +114,9 @@ export default function Register() {
           {formik.errors.password && formik.touched.password && <div className='alert alert-danger mt-2'>{formik.errors.password}</div>}
         </motion.div>
 
-        <motion.div variants={itemVariants} className="text-center m-auto w-50">
+        <motion.div variants={itemVariants} className="text-center m-auto">
           {loading ? (
-            <button disabled type='button' className='btn btn-success mt-2 w-75 mb-2'> 
+            <button disabled type='button' className='btn btn-success mt-2 w-50 mb-2'> 
               <i className='fas fa-spinner fa-spin'></i>
             </button>
           ) : (
