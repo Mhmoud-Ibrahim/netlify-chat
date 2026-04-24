@@ -114,13 +114,13 @@ export default function Register() {
           {formik.errors.password && formik.touched.password && <div className='alert alert-danger mt-2'>{formik.errors.password}</div>}
         </motion.div>
 
-        <motion.div variants={itemVariants} className="text-center m-auto">
+        <motion.div variants={itemVariants} className="text-center m-auto w-50">
           {loading ? (
             <button disabled type='button' className='btn btn-success mt-2 w-75 mb-2'> 
               <i className='fas fa-spinner fa-spin'></i>
             </button>
           ) : (
-            <button disabled={!(formik.dirty && formik.isValid)} type='submit' className='btn btn-danger mt-2 w-50 mb-2 w-75'>
+            <button disabled={!(formik.dirty && formik.isValid)} type='submit' className='btn btn-danger mt-2 w-50 py-1 mb-2 w-75'>
               Register
             </button>
           )}
