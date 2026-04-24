@@ -52,6 +52,9 @@ export default function Register() {
     }
     setLoading(false);
   }
+    const handleGoogleLogin = () => {
+    window.location.href = "https://m2dd-serverchatapp.hf.space/auth/google"; 
+  };
 
   let validationSchema = Yup.object({
     name: Yup.string().required('name is required').min(4, 'must less than 4 digites'),
@@ -120,7 +123,17 @@ export default function Register() {
               Register
             </button>
           )}
+
+
         </motion.div>
+          {/* زر Google */}
+          <button 
+            type="button" 
+            onClick={handleGoogleLogin} 
+            className="btn btn-outline-light w-100 d-flex align-items-center justify-content-center gap-2 mb-2"
+          >
+            <i className="fab fa-google text-danger"></i> Continue with Google
+          </button>
       </motion.div>
     </form>
   </>
