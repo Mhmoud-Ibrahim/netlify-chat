@@ -152,24 +152,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
 
         if (!userId || userId.trim() === '') return;
-        // {
-        //     // if (socket) {
-        //     //     socket.disconnect();
-        //     //     setSocket(null);
-        //     // }
-            
-        // }
-
-        //   if (!userId || userId.trim() === '') return;
-
-        // 2. منع إعادة إنشاء السوكيت إذا كان موجوداً ومتصلاً بالفعل لنفس المستخدم
+     
         if (socket && socket.connected && socket.io.opts.query?.userId === userId) return;
 
         const newSocket = io("https://m2dd-serverchatapp.hf.space", {
             withCredentials: true,
             transports: ['websocket'],
             reconnection: true,
-            query: { userId: userId },         // إعادة الاتصال تلقائيا     
+            query: { userId: userId },        
             timeout: 20000,
 
         });
@@ -225,16 +215,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
                     const senderObj = currentList.find(u =>
                         String(u.userId).replace(/['"]+/g, '') === incomingSenderId
                     );
-                    // toast.success(`New message from ${senderObj ? senderObj.name : "Unknown"}`, {
-                    //     icon: '💬',
-                    //     duration: 5000,
-                    //     position: 'top-right',
-                    //     style: {
-                    //         borderRadius: '10px',
-                    //         background: '#123405',
-                    //         color: 'yellow',
-                    //     },
-                    // });
+                  
                     setNotification({
                         msg: data.text || "message is sent",
                         senderName: senderObj ? senderObj.name : "Unknown",
