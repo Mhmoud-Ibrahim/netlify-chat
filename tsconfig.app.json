@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
      "baseUrl": ".",
     "paths": {
       "virtual:pwa-register": ["./node_modules/vite-plugin-pwa/client.d.ts"]
